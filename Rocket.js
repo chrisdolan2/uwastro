@@ -1,5 +1,4 @@
 "use strict";
-document.body.textContent = "begin";
 // This version is a straight port of http://user.astro.wisc.edu/~dolan/java/nbody/Rocket.java changing as little as possible, warts and all.
 // Earlier I tried to port + clean up in one go, but it was too hard to understand all the ancient Java code.
 class Rocket {
@@ -15,7 +14,7 @@ class Rocket {
           Button resetbutton, optbutton, optbutton2, helpbutton, helpbutton2;
           public Button runbutton;
           Button timeUp, timeDown, zoomIn, zoomOut;
-          Panel center, options, help;
+          Panel center, options;
           CardLayout card;
           Label time, timestep, zoom;
           Choice centermenu, destmenu;
@@ -24,7 +23,6 @@ class Rocket {
           TextField astVelText2, astDayText2, astAngText2;
           Checkbox trailsCheckbox, BSCheckbox, twoDCheckbox, captureCheckbox;
           Checkbox useCheckbox[];
-          TextArea HelpText;
         */
         // General variables
         this.startHandler = false;
@@ -82,7 +80,6 @@ class Rocket {
             setLayout(card = new CardLayout());
             add("Plot", center = new Panel());
             add("Options", options = new Panel());
-            add("Help", help = new Panel());
         
             center.setLayout(new BorderLayout());
             center.add("Center", canvas = new RocketCanvas(this, intThread));
@@ -104,8 +101,6 @@ class Rocket {
             // resetbutton.addActionListener(this);
             bottom.add(optbutton = new Button("Options"));
             // optbutton.addActionListener(this);
-            bottom.add(helpbutton = new Button("Help"));
-            // helpbutton.addActionListener(this);
             bottom.add(new Label("Center on:"));
         
             centermenu = new Choice();
@@ -275,106 +270,6 @@ class Rocket {
             panel.add(captureCheckbox = new Checkbox("Use capture physics?"));
             captureCheckbox.setState(usecapture);
             // captureCheckbox.addItemlistener(this);
-        
-            help.setLayout(new BorderLayout());
-        
-            help.add("South", panel = new Panel());
-            panel.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
-            panel.add(helpbutton2 = new Button("Return to main screen"));
-            // helpbutton2.addActionListener(this);
-        
-            help.add("Center", current = new Panel());
-            //    current.setLayout(new FlowLayout(FlowLayout.CENTER, 0, 0));
-            current.setLayout(new BorderLayout());
-            current.add("Center", HelpText = new TextArea());
-            HelpText.setEditable(false);
-            HelpText.appendText("Help for Rocket/Asteroid Applet -- Chris Dolan, UWisc Astronomy, 1998\n");
-            HelpText.appendText("\n");
-            HelpText.appendText("You can use this program to watch a realistic animation of our solar system.\n");
-            HelpText.appendText("Click the \"Run\" button to start or stop the simulation\n");
-            HelpText.appendText("Click the \"Restart\" button put the planets back where they started.\n");
-            HelpText.appendText("Click the \"Options\" button to change the orbit of the Rocket or Asteroid.\n");
-            HelpText.appendText("You can increase or decrease the speed of the animation by changing the time step.\n");
-            HelpText.appendText("You can zoom in or zoom out to see different views of the solar system.\n");
-            HelpText.appendText("By default, you are looking down at the solar system centered on the Sun, but\n");
-            HelpText.appendText("    you can change which body to center on with the pull-down menu.\n");
-            HelpText.appendText("If you click \"Draw Trails\" the planets will leave dots along their paths so\n");
-            HelpText.appendText("    you can trace the orbits.\n");
-            HelpText.appendText("\n");
-            HelpText.appendText("--- Options Page ---\n");
-            if (RocketMode) {
-              HelpText.appendText("On the Options screen, you can adjust when the Rocket blasts off from the Earth\n");
-              HelpText.appendText("    as well as how fast and in which direction it goes.  For the sake of\n");
-              HelpText.appendText("    simplicity, the launch velocity is a simple speed relative to the Earth,\n");
-              HelpText.appendText("    ignoring the complication of the Earth's gravity.\n");
-              HelpText.appendText("If you turn on \"Capture Physics\" at the bottom of the page, then if the Rocket\n");
-              HelpText.appendText("    gets within 3 million km of a planet, it will land.\n");
-              HelpText.appendText("If the Rocket successfully lands on another planet, it will wait a certain amount\n");
-              HelpText.appendText("    of time (specified on the Options screen) and then take off again to try to\n");
-              HelpText.appendText("    get back to Earth, based on the direction and velocity you enter.\n");
-              HelpText.appendText("The \"Destination\" is used to tell the program where you are trying to send the\n");
-              HelpText.appendText("    Rocket.  You can actually land on any planet even if it is not your stated\n");
-              HelpText.appendText("    destination, but the program will only report by how much you missed a planet\n");
-              HelpText.appendText("    if it is your destination.\n");
-              HelpText.appendText("The default scenario is that the Rocket and the planets all move in a\n");
-              HelpText.appendText("    two-dimensional plane (ignoring distance in and out of the screen) for\n");
-              HelpText.appendText("    simplicity.  If you turn off \"Use 2D physics\" then the full-blown 3D\n");
-              HelpText.appendText("    motions of the planets will be used.  In this case, the screen is in the\n");
-              HelpText.appendText("    plane of the Earth's orbit.  In 3D physics it is nearly impossible to\n");
-              HelpText.appendText("    simulate a gravity assist off another planet, since there is no way to\n");
-              HelpText.appendText("    specify the Rocket's inclination from the Ecliptic plane.\n");
-            }
-            if (AsteroidMode) {
-              HelpText.appendText("On the Options screen, you can enter parameters to specify where the asteroid is\n");
-              HelpText.appendText("    when you first look at it.  You specify\n");
-              HelpText.appendText("    (1) how far it is from the Earth, which you can deduce via parallax measurements;\n");
-              HelpText.appendText("    (2) what's the angle from the Sun, which you can deduce from the coordinates of\n");
-              HelpText.appendText("        the asteroid and the time of the observations;\n");
-              HelpText.appendText("    (3) the tangential velocity of the asteroid, which you can deduce from the proper\n");
-              HelpText.appendText("        motion of the asteroid, along with its distance from the Earth;\n");
-              HelpText.appendText("    (4) the radial velocity of the asteroid, which you can measure by observing a\n");
-              HelpText.appendText("        spectrum of the asteroid.\n");
-              HelpText.appendText("If you turn on \"Capture Physics\" at the bottom of the page, then if the Asteroid\n");
-              HelpText.appendText("    gets within 400,000 km of a planet, it will collide.  Of course, in reality it\n");
-              HelpText.appendText("    has to get much closer than this, but we thought we'd make this a little more\n");
-              HelpText.appendText("    interesting.\n");
-              HelpText.appendText("The default scenario is that the Asteroid and the planets all move in 3D space.  If\n");
-              HelpText.appendText("    you turn on \"2D physics\" then the program ignores the motions and distance in\n");
-              HelpText.appendText("    and out of the screen.  This makes it much more likely that you will see collisions\n");
-              HelpText.appendText("    or gravity slingshots in the motion of the asteroid.  In 3D space, these encounters\n");
-              HelpText.appendText("    are extremely rare, since the orbital plane of the Asteroid is inclined to the\n");
-              HelpText.appendText("    orbits of all the planets except the Earth.\n");
-            }
-            HelpText.appendText("\n");
-            HelpText.appendText("\n");
-            HelpText.appendText("--- About this program ---\n");
-            HelpText.appendText("This Java program is a realistic simulation of the major bodies in our solar system.\n");
-            HelpText.appendText("It uses only Newton's Law of gravity (F=GMm/r^2) to simulate the motions of the\n");
-            HelpText.appendText("    planets.\n");
-            HelpText.appendText("The technique to translate forces into an animation is called an \"N Body Algorithm\"\n");
-            HelpText.appendText("    where in this case, N=11 (the Sun, nine planets and a Rocket or Asteroid).\n");
-            HelpText.appendText("Specifically, it is an adaptive step-size, Runga-Kutta integrator algorithm\n");
-            HelpText.appendText("Even the Sun moves due to the tug of the planets, but its motion is very small\n");
-            HelpText.appendText("    since its mass is so large.\n");
-            HelpText.appendText("\n");
-            HelpText.appendText("As implied above, this program is multi-purpose.  Depending on the initial\n");
-            HelpText.appendText("    parameters, this acts as either a Rocket simulator for the Astro 114 Astronautics\n");
-            HelpText.appendText("    lab or as an Asteroid simulator for the Astro 114 Doomsday Asteroid lab.  The key\n");
-            HelpText.appendText("    difference is the way the Options page behaves.\n");
-            HelpText.appendText("To switch between the two modes, choose one of the methods below to start the\n");
-            HelpText.appendText("    applet (see \"Page Source\" from the Netscape View menu to see which one is\n");
-            HelpText.appendText("    used for this invokation of the applet.\n");
-            HelpText.appendText("\n");
-            HelpText.appendText("<applet code=\"Rocket.class\" width=... height=...>\n");
-            HelpText.appendText("<param name=\"mode\" value=\"Rocket\">\n");
-            HelpText.appendText("</applet>\n");
-            HelpText.appendText("\n");
-            HelpText.appendText("or\n");
-            HelpText.appendText("\n");
-            HelpText.appendText("<applet code=\"Rocket.class\" width=... height=...>\n");
-            HelpText.appendText("<param name=\"mode\" value=\"Asteroid\">\n");
-            HelpText.appendText("</applet>\n");
-            HelpText.appendText("\n");
         */
         this.startHandler = true;
     }
