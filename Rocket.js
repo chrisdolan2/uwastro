@@ -14,6 +14,14 @@ class Label {
         this.html_label.innerHTML = s;
     }
 }
+class JEvent {
+    constructor(target, id, arg) {
+        this.target = target;
+        this.id = id;
+        this.arg = arg;
+    }
+}
+JEvent.ACTION_EVENT = 1;
 class Rocket {
     constructor() {
         /*
@@ -325,6 +333,169 @@ class Rocket {
     setZoom() {
         this.zoom.setText("" + (Math.floor(100000.0 * this.canvas.zoom) / 100000.0) + "     ");
     }
+    itemStateChanged(event) {
+        let target = event.target;
+        /*
+            if (target == BSCheckbox) {
+              useBSstep = BSCheckbox.getState();
+              intThread.queueReset();
+            } else if (target == twoDCheckbox) {
+              use2D = twoDCheckbox.getState();
+              intThread.queueReset();
+            } else if (target == captureCheckbox) {
+              usecapture = captureCheckbox.getState();
+              intThread.queueReset();
+            } else if (target == trailsCheckbox) {
+              drawtrails = trailsCheckbox.getState();
+              canvas.clearTrails();
+            } else if (target == useCheckbox[0]) {
+              intThread.use[0] = useCheckbox[0].getState();
+            } else if (target == useCheckbox[1]) {
+              intThread.use[1] = useCheckbox[1].getState();
+            } else if (target == useCheckbox[2]) {
+              intThread.use[2] = useCheckbox[2].getState();
+            } else if (target == useCheckbox[3]) {
+              intThread.use[3] = useCheckbox[3].getState();
+            } else if (target == useCheckbox[4]) {
+              intThread.use[4] = useCheckbox[4].getState();
+            } else if (target == useCheckbox[5]) {
+              intThread.use[5] = useCheckbox[5].getState();
+            } else if (target == useCheckbox[6]) {
+              intThread.use[6] = useCheckbox[6].getState();
+            } else if (target == useCheckbox[7]) {
+              intThread.use[7] = useCheckbox[7].getState();
+            } else if (target == useCheckbox[8]) {
+              intThread.use[8] = useCheckbox[8].getState();
+            } else if (target == useCheckbox[9]) {
+              intThread.use[9] = useCheckbox[9].getState();
+            } else if (target == useCheckbox[10]) {
+              intThread.use[10] = useCheckbox[10].getState();
+            } else if (target == centermenu) {
+              int i,j,n;
+              n = centermenu.getSelectedIndex();
+              for (i=0,j=0; i<n; i++,j++)
+            while (!intThread.use[j])
+              j++;
+              canvas.setCenter(j);
+            } else {
+              if (RocketMode) {
+            if (target == destmenu) {
+              int i,j,n;
+              n = destmenu.getSelectedIndex();
+              for (i=0,j=0; i<n; i++,j++)
+                while (!intThread.use[j])
+                  j++;
+              intThread.realdestplanet = j;
+            } else {
+              return false;
+            }
+              } else {
+            return false;
+              }
+            }
+            */
+        return false;
+    }
+    actionPerformed(event) {
+        let target = event.target;
+        if (target == this.intThread) {
+            if (event.arg == this.canvas) {
+                this.canvas.capture(this.intThread.capture);
+            }
+            else {
+                this.setUnready();
+                this.setTime();
+                this.canvas.update(this.canvas.getGraphics());
+            }
+            /*
+                } else if (target == optbutton) {
+                  card.show(this, "Options");
+                } else if (target == helpbutton) {
+                  card.show(this, "Help");
+                } else if (target == helpbutton2) {
+                  card.show(this, "Plot");
+                } else if (target == resetbutton) {
+                  if (threadstarted) {
+                if (running) {
+                  intThread.queueReset();
+                } else {
+                  intThread.queueReset();
+                  intThread.resume();
+                }
+                  }
+                } else if (target == runbutton) {
+                  if (!running) {
+                if (!threadstarted) {
+                  threadstarted = true;
+                  intThread.start();
+                } else {
+                }
+                runbutton.setLabel("Stop");
+                running = true;
+                intThread.running = true;
+                intThread.resume();
+                  } else {
+                runbutton.setLabel("Run");
+                running = false;
+                intThread.running = false;
+                  }
+                } else if (target == timeUp) {
+                  intThread.adjustTimeStepUp(true);
+                  setTimeStep();
+                } else if (target == timeDown) {
+                  intThread.adjustTimeStepUp(false);
+                  setTimeStep();
+                } else if (target == zoomIn) {
+                  canvas.ZoomIn(true);
+                  this.setZoom();
+                } else if (target == zoomOut) {
+                  canvas.ZoomIn(false);
+                  this.setZoom();
+                } else if (target == optbutton2) {
+                  if (RocketMode) {
+                intThread.doRocket(1, new Double(astAngText.getText()).doubleValue(),
+                           new Double(astVelText.getText()).doubleValue(),
+                           new Double(astDayText.getText()).doubleValue());
+                intThread.doRocket(2, new Double(astAngText2.getText()).doubleValue(),
+                           new Double(astVelText2.getText()).doubleValue(),
+                           new Double(astDayText2.getText()).doubleValue());
+                card.show(this, "Plot");
+                  } else {
+                intThread.doAsteroid(new Double(astDistText.getText()).doubleValue(),
+                             new Double(astAngText.getText()).doubleValue(),
+                             new Double(astTanVelText.getText()).doubleValue(),
+                             new Double(astRadVelText.getText()).doubleValue());
+                card.show(this, "Plot");
+                  }
+            */
+        }
+        return false;
+    }
+    handleEvent(event) {
+        if (!this.startHandler) {
+            return false; // super.handleEvent(event);
+        }
+        if (event.id == JEvent.ACTION_EVENT) {
+            if (this.itemStateChanged(event) || this.actionPerformed(event))
+                return true;
+            else
+                return false; // super.handleEvent(event);
+        }
+        else
+            return false; // super.handleEvent(event);
+    }
+    deliverEvent(event) {
+        return this.handleEvent(event);
+    }
+    isReady() {
+        return this.ready;
+    }
+    setReady() {
+        this.ready = true;
+    }
+    setUnready() {
+        this.ready = false;
+    }
 }
 class Dimension {
     constructor() {
@@ -372,6 +543,9 @@ class RocketCanvas {
         if (this.useTrailBuffer)
             this.clearTrails();
     }
+    getGraphics() {
+        return this.ctx;
+    }
     ZoomIn(is_in) {
         let amt = 1.5;
         this.scale /= this.zoom;
@@ -380,149 +554,163 @@ class RocketCanvas {
         else
             this.zoom /= amt;
         this.scale *= this.zoom;
-        //update(getGraphics());
+        this.update(this.getGraphics());
         if (this.useTrailBuffer)
             this.clearTrails();
     }
     setCenter(c) {
         this.centerOn = c;
-        //update(getGraphics());
+        this.update(this.getGraphics());
         if (this.useTrailBuffer)
             this.clearTrails();
     }
     clearTrails() {
         if (this.useTrailBuffer) {
             this.d = this.size();
-            //this.rocket_top.gBuf2.setColor(Color.black);
-            //this.rocket_top.gBuf2.fillRect(0, 0, this.d.width, this.d.height);
+            this.ctx.fillStyle = "black";
+            this.ctx.fillRect(0, 0, this.d.width, this.d.height);
         }
         else {
             this.trailstart = this.trailstop = 0;
         }
     }
-    //void drawCenteredString(Graphics g, String s, int x, int y) {
-    //  FontMetrics f = g.getFontMetrics(g.getFont());
-    //  g.drawString(s, x - f.stringWidth(s)/2, y + f.getHeight()/2);
-    //}
-    /*
-      protected void paintScale(Graphics g) {
-        double l;
-        int ll;
-    
-        l = 1.0/(scale*this.thread.dscale*5*1.496e13);
-        l = Math.pow(10.0, Math.round(Math.log(l)/Math.log(10.0)));
-        ll = (int)(0.5*l*this.thread.dscale*scale*1.496e13*(double)d.width);
-        g.setColor(Color.white);
-        g.drawLine(this.xmid-ll, this.d.height-8, this.xmid+ll, this.d.height-8);
-        drawCenteredString(g, ""+l+" AU", this.xmid, this.d.height-17);
-      }
-    
-      protected void paintSky(Graphics g) {
-        int i,j;
-        int size = 3;
-        int x,y,z;
-    
-        this.d = size();
-        this.xmid = this.d.width/2;
-        this.ymid = this.d.height/2;
-    
+    drawCenteredString(g, s, x, y) {
+        let t = g.measureText(s);
+        g.fillText(s, x - t.width / 2, y + t.fontBoundingBoxAscent / 2);
+    }
+    drawLine(g, x1, y1, x2, y2) {
+        g.beginPath();
+        g.moveTo(x1, y1);
+        g.lineTo(x2, y2);
+        g.closePath();
+        g.stroke();
+    }
+    fillOval(g, x, y, w, h) {
+        g.beginPath();
+        g.arc(x, y, (w + h) / 4.0, 0, Math.PI * 2, true);
+        g.closePath();
+        g.fill();
+    }
+    paintScale(g) {
+        let l;
+        let ll; // int;
+        l = 1.0 / (this.scale * this.thread.dscale * 5 * 1.496e13);
+        l = Math.pow(10.0, Math.round(Math.log(l) / Math.log(10.0)));
+        ll = Math.floor(0.5 * l * this.thread.dscale * this.scale * 1.496e13 * this.d.width);
+        g.fillStyle = "white";
+        this.drawLine(g, this.xmid - ll, this.d.height - 8, this.xmid + ll, this.d.height - 8);
+        this.drawCenteredString(g, "" + l + " AU", this.xmid, this.d.height - 17);
+    }
+    paintSky(g) {
+        let i;
+        let j;
+        let size = 3;
+        let x;
+        let y;
+        let z;
+        this.d = this.size();
+        this.xmid = this.d.width / 2;
+        this.ymid = this.d.height / 2;
         if (this.useTrailBuffer) {
-          if (this.rocket_top.drawtrails) {
-            g.drawImage(this.rocket_top.buf2, 0, 0, this);
-          } else {
-        g.setColor(Color.black);
-        g.fillRect(0, 0, this.d.width, this.d.height);
-          }
-        } else {
-          g.setColor(Color.black);
-          g.fillRect(0, 0, this.d.width, this.d.height);
-    
-          if (this.rocket_top.drawtrails) {
-        for (i=0; i<this.thread.nobj; i++) {
-          g.setColor(trailColor[i]);
-          if (this.thread.use[i]) {
-            if (this.trailstart <= this.trailstop) {
-              for (j=this.trailstart; j<this.trailstop; j++)
-            g.fillOval(trails[i][j][0], trails[i][j][1], 2, 2);
-            } else {
-              for (j=this.trailstart; j<this.trailmax; j++)
-            g.fillOval(trails[i][j][0], trails[i][j][1], 2, 2);
-              for (j=0; j<this.trailstop; j++)
-            g.fillOval(trails[i][j][0], trails[i][j][1], 2, 2);
+            if (this.rocket_top.drawtrails) {
+                // TODO
+                //g.drawImage(this.rocket_top.buf2, 0, 0, this);
             }
-          }
-        }
-          }
-        }
-    
-        g.setColor(Color.white);
-        for (i=0; i<this.thread.nobj; i++) {
-          if (this.thread.use[i] && (launched || i != this.thread.nobj-1 || !rocket_top.RocketMode)) {
-        x = xmid + (int)((double)d.width*scale*(this.thread.pos[i*6+1]-this.thread.pos[this.centerOn*6+1]));
-        y = ymid - (int)((double)d.height*scale*(this.thread.pos[i*6+2]-this.thread.pos[this.centerOn*6+2]));
-        // z = (int)((double)d.height*scale*(this.thread.pos[i*6+3]-this.thread.pos[this.centerOn*6+3])*0.2);
-        z = (int)((double)d.height*scale*this.thread.pos[i*6+3]*0.2);
-        g.setColor(Color.white);
-            g.fillOval(x - size, y - size, size*2, size*2);
-        drawCenteredString(g, this.thread.names[i], x, y+7);
-    
-        if (rocket_top.drawtrails) {
-          if (useTrailBuffer) {
-            rocket_top.gBuf2.setColor(trailColor[i]);
-            rocket_top.gBuf2.fillOval(x-1, y-1, 2, 2);
-          } else {
-            trails[i][trailstop][0] = x-1;
-            trails[i][trailstop][1] = y-1;
-            trailstop++;
-            if (trailstop == trailmax)
-              trailstop = 0;
-            if (trailstop == trailstart) {
-              trailstart++;
-              if (trailstart == trailmax)
-            trailstart = 0;
+            else {
+                g.fillStyle = "black";
+                g.fillRect(0, 0, this.d.width, this.d.height);
             }
-          }
         }
-          }
+        else {
+            g.fillStyle = "black";
+            g.fillRect(0, 0, this.d.width, this.d.height);
+            /*
+                  if (this.rocket_top.drawtrails) {
+                for (i=0; i<this.thread.nobj; i++) {
+                  g.setColor(trailColor[i]);
+                  if (this.thread.use[i]) {
+                    if (this.trailstart <= this.trailstop) {
+                      for (j=this.trailstart; j<this.trailstop; j++)
+                    this.fillOval(g, trails[i][j][0], trails[i][j][1], 2, 2);
+                    } else {
+                      for (j=this.trailstart; j<this.trailmax; j++)
+                    this.fillOval(g, trails[i][j][0], trails[i][j][1], 2, 2);
+                      for (j=0; j<this.trailstop; j++)
+                    this.fillOval(g, trails[i][j][0], trails[i][j][1], 2, 2);
+                    }
+                  }
+                }
+                  }
+            */
         }
-        if (rocket_top.drawtrails && useTrailBuffer && !this.launched && this.thread.launched) {
-          i = this.thread.nobj-1;
-          x = xmid + Math.floor(d.width*scale*(this.thread.pos[i*6+1]-this.thread.pos[this.centerOn*6+1]));
-          y = ymid - Math.floor(d.height*scale*(this.thread.pos[i*6+2]-this.thread.pos[this.centerOn*6+2]));
-          z = Math.floor(d.height*scale*this.thread.pos[i*6+3]*0.2);
-          rocket_top.gBuf2.setColor(Color.green);
-          rocket_top.gBuf2.drawLine(x, y, x, y-6);
-          drawCenteredString(rocket_top.gBuf2, "launched", x, y-15);
-          this.launched = true;
+        g.fillStyle = "white";
+        for (i = 0; i < this.thread.nobj; i++) {
+            if (this.thread.use[i] && (this.launched || i != this.thread.nobj - 1 || !this.rocket_top.RocketMode)) {
+                x = this.xmid + Math.floor(this.d.width * this.scale * (this.thread.pos[i * 6 + 1] - this.thread.pos[this.centerOn * 6 + 1]));
+                y = this.ymid - Math.floor(this.d.height * this.scale * (this.thread.pos[i * 6 + 2] - this.thread.pos[this.centerOn * 6 + 2]));
+                // z = Math.floor(this.d.height*this.scale*(this.thread.pos[i*6+3]-this.thread.pos[this.centerOn*6+3])*0.2);
+                z = Math.floor(this.d.height * this.scale * this.thread.pos[i * 6 + 3] * 0.2);
+                g.fillStyle = "white";
+                this.fillOval(g, x - size, y - size, size * 2, size * 2);
+                this.drawCenteredString(g, this.thread.names[i], x, y + 7);
+                /*
+            if (rocket_top.drawtrails) {
+              if (useTrailBuffer) {
+                rocket_top.gBuf2.setColor(trailColor[i]);
+                rocket_top.gBuf2.fillOval(x-1, y-1, 2, 2);
+              } else {
+                trails[i][trailstop][0] = x-1;
+                trails[i][trailstop][1] = y-1;
+                trailstop++;
+                if (trailstop == trailmax)
+                  trailstop = 0;
+                if (trailstop == trailstart) {
+                  trailstart++;
+                  if (trailstart == trailmax)
+                trailstart = 0;
+                }
+              }
+            }
+                */
+            }
         }
-        paintScale(g);
-        if (message != "") {
-          g.setColor(Color.yellow);
-          drawCenteredString(g, message, xmid, 10);
-          if (++msgcount == msgkeeptime) {
-        message = "";
-        msgcount = 0;
-          }
+        if (this.rocket_top.drawtrails && this.useTrailBuffer && !this.launched && this.thread.launched) {
+            i = this.thread.nobj - 1;
+            x = this.xmid + Math.floor(this.d.width * this.scale * (this.thread.pos[i * 6 + 1] - this.thread.pos[this.centerOn * 6 + 1]));
+            y = this.ymid - Math.floor(this.d.height * this.scale * (this.thread.pos[i * 6 + 2] - this.thread.pos[this.centerOn * 6 + 2]));
+            z = Math.floor(this.d.height * this.scale * this.thread.pos[i * 6 + 3] * 0.2);
+            g.fillStyle = "green";
+            this.drawLine(g, x, y, x, y - 6);
+            this.drawCenteredString(g, "launched", x, y - 15);
+            this.launched = true;
         }
-      }
-    
-      void paint(Graphics g) {
-        if (useDoubleBuffer) {
-          paintSky(rocket_top.gBuf);
-          g.drawImage(rocket_top.buf, 0, 0, this);
-        } else {
-          paintSky(g);
+        this.paintScale(g);
+        if (this.message != "") {
+            g.fillStyle = "yellow";
+            this.drawCenteredString(g, this.message, this.xmid, 10);
+            if (++this.msgcount == this.msgkeeptime) {
+                this.message = "";
+                this.msgcount = 0;
+            }
         }
-        rocket_top.setReady();
-      }
-    
-      void update(Graphics g) {
+    }
+    paint(g) {
+        if (this.useDoubleBuffer) {
+            //this.paintSky(rocket_top.gBuf);
+            //g.drawImage(rocket_top.buf, 0, 0, this);
+        }
+        else {
+            this.paintSky(g);
+        }
+        this.rocket_top.setReady();
+    }
+    update(g) {
         // override this because the default implementation always
         // calls clearRect first, causing unwanted flicker
-        paint(g);
-      }
-    
-      protected void paintCapture(Graphics g, int n) {
+        this.paint(g);
+    }
+    /*
+      paintCapture(g : CanvasRenderingContext2D, n : number) : void {
         FontMetrics f = g.getFontMetrics(g.getFont());
         int w,h;
         String s;
@@ -1614,10 +1802,10 @@ class RocketThread {
         }
     }
     refresh() {
-        //this.rocket_top.deliverEvent(new Event(this, Event.ACTION_EVENT, this));
+        this.rocket_top.deliverEvent(new JEvent(this, JEvent.ACTION_EVENT, this));
     }
     refreshcanvas() {
-        //this.rocket_top.deliverEvent(new Event(this, Event.ACTION_EVENT, this.rocket_top.canvas));
+        this.rocket_top.deliverEvent(new JEvent(this, JEvent.ACTION_EVENT, this.rocket_top.canvas));
     }
 }
 let r = new Rocket();
