@@ -1,6 +1,19 @@
 "use strict";
 // This version is a straight port of http://user.astro.wisc.edu/~dolan/java/nbody/Rocket.java changing as little as possible, warts and all.
 // Earlier I tried to port + clean up in one go, but it was too hard to understand all the ancient Java code.
+// Wrapper around an HTML span to show data
+class Label {
+    constructor(id) {
+        let span = document.getElementById(id);
+        if (!(span instanceof HTMLSpanElement)) {
+            throw new Error("Missing span: " + id);
+        }
+        this.html_label = span;
+    }
+    setText(s) {
+        this.html_label.innerHTML = s;
+    }
+}
 class Rocket {
     constructor() {
         /*
@@ -16,7 +29,6 @@ class Rocket {
           Button timeUp, timeDown, zoomIn, zoomOut;
           Panel center, options;
           CardLayout card;
-          Label time, timestep, zoom;
           Choice centermenu, destmenu;
           TextField astDistText, astTanVelText, astRadVelText;
           TextField astVelText, astDayText, astAngText;
@@ -24,6 +36,9 @@ class Rocket {
           Checkbox trailsCheckbox, BSCheckbox, twoDCheckbox, captureCheckbox;
           Checkbox useCheckbox[];
         */
+        this.time = new Label("time");
+        this.timestep = new Label("timestep");
+        this.zoom = new Label("zoom");
         // General variables
         this.startHandler = false;
         this.usecapture = true;
@@ -271,6 +286,9 @@ class Rocket {
             captureCheckbox.setState(usecapture);
             // captureCheckbox.addItemlistener(this);
         */
+        this.setTime();
+        this.setTimeStep();
+        this.setZoom();
         this.startHandler = true;
     }
     /*
@@ -296,13 +314,16 @@ class Rocket {
       }
     */
     setTime() {
-        //time.setText("" + (this.intThread.pos[0]/(this.intThread.tscale*86400.0))+"      ");
+        this.time.setText("" + (this.intThread.pos[0] / (this.intThread.tscale * 86400.0)) + "      ");
     }
     setTimeStep() {
-        //if (this.intThread.timeTweak == 0.0)
-        //  timestep.setText("" + (this.intThread.tstep/(this.intThread.tscale*86400.0))+"     ");
-        //else
-        //  timestep.setText("" + (this.intThread.tstep*this.intThread.timeTweak/(this.intThread.tscale*86400.0))+"      ");
+        if (this.intThread.timeTweak == 0.0)
+            this.timestep.setText("" + (this.intThread.tstep / (this.intThread.tscale * 86400.0)) + "     ");
+        else
+            this.timestep.setText("" + (this.intThread.tstep * this.intThread.timeTweak / (this.intThread.tscale * 86400.0)) + "      ");
+    }
+    setZoom() {
+        this.zoom.setText("" + (Math.floor(100000.0 * this.canvas.zoom) / 100000.0) + "     ");
     }
 }
 class Dimension {
@@ -313,15 +334,16 @@ class Dimension {
 }
 class RocketCanvas {
     size() {
-        // TODO
         let dd = new Dimension();
-        dd.width = 400;
-        dd.height = 400;
+        dd.width = this.html_canvas.width;
+        dd.height = this.html_canvas.height;
         return dd;
     }
     constructor(parent, intThread) {
         this.d = new Dimension();
         let i;
+        this.html_canvas = document.getElementById("canvas");
+        this.ctx = this.html_canvas.getContext("2d");
         this.d = this.size();
         this.xmid = this.d.width / 2;
         this.ymid = this.d.height / 2;
@@ -1598,3 +1620,4 @@ class RocketThread {
         //this.rocket_top.deliverEvent(new Event(this, Event.ACTION_EVENT, this.rocket_top.canvas));
     }
 }
+let r = new Rocket();
