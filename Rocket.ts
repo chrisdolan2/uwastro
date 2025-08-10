@@ -1,11 +1,12 @@
 document.body.textContent = "begin";
 
 // This version is a straight port of http://user.astro.wisc.edu/~dolan/java/nbody/Rocket.java changing as little as possible, warts and all.
-'// Earlier I tried to port + clean up in one go, but it was too hard to understand all the ancient Java code.
+// Earlier I tried to port + clean up in one go, but it was too hard to understand all the ancient Java code.
 
 class Rocket {
 
   canvas : RocketCanvas;
+  intThread : RocketThread;
 
 /*
   // Double buffering Objects
@@ -18,10 +19,8 @@ class Rocket {
   Button resetbutton, optbutton, optbutton2, helpbutton, helpbutton2;
   public Button runbutton;
   Button timeUp, timeDown, zoomIn, zoomOut;
-  public RocketCanvas canvas;
   Panel center, options, help;
   CardLayout card;
-  RocketThread intThread;
   Label time, timestep, zoom;
   Choice centermenu, destmenu;
   TextField astDistText, astTanVelText, astRadVelText;
@@ -47,7 +46,7 @@ class Rocket {
   RocketMode : boolean = true;
   AsteroidMode : boolean = false;
 
-  init() : void {
+  constructor() {
     let i : number;
 /*
     Panel panel, bottom, current;
@@ -84,9 +83,11 @@ class Rocket {
 
     this.ready = true;
 
+    this.intThread = new RocketThread(this);
+    this.canvas = new RocketCanvas(this, this.intThread);
+
 /*
-    intThread = new RocketThread(this);
-    intThread.setPriority(Thread.MIN_PRIORITY);
+   intThread.setPriority(Thread.MIN_PRIORITY);
      
    setBackground(Color.lightGray);
     setFont(font = new Font("Helvetica", Font.PLAIN, 12));
@@ -417,18 +418,14 @@ class Rocket {
 */
 
   setTime() : void {
-    let time; // TODO
-    let intThread; // TODO
-    time.setText("" + (intThread.pos[0]/(intThread.tscale*86400.0))+"      ");
+    //time.setText("" + (this.intThread.pos[0]/(this.intThread.tscale*86400.0))+"      ");
   }
 
   setTimeStep() : void {
-    let timestep; // TODO
-    let intThread; // TODO
-    if (intThread.timeTweak == 0.0)
-      timestep.setText("" + (intThread.tstep/(intThread.tscale*86400.0))+"     ");
-    else
-      timestep.setText("" + (intThread.tstep*intThread.timeTweak/(intThread.tscale*86400.0))+"      ");
+    //if (this.intThread.timeTweak == 0.0)
+    //  timestep.setText("" + (this.intThread.tstep/(this.intThread.tscale*86400.0))+"     ");
+    //else
+    //  timestep.setText("" + (this.intThread.tstep*this.intThread.timeTweak/(this.intThread.tscale*86400.0))+"      ");
   }
 
 /*
@@ -604,13 +601,13 @@ class Rocket {
 }
 
 class Dimension {
- width : number;
- height : number;
+ width : number = 0.0;
+ height : number = 0.0;
 }
 
 class RocketCanvas {
 
-  d : Dimension;
+  d : Dimension = new Dimension();
   xmid : number;
   ymid : number;
   scale : number;
@@ -630,8 +627,20 @@ class RocketCanvas {
   msgcount : number; // int
   msgkeeptime : number; // int
 
-  constructor(parent : Rocket, intThread : RocketThread) {
+  size() : Dimension {
+    // TODO
+    let dd : Dimension = new Dimension();
+    dd.width = 400;
+    dd.height = 400;
+    return dd;
+  }
+
+constructor(parent : Rocket, intThread : RocketThread) {
     let i : number;
+
+    this.d = this.size();
+    this.xmid = this.d.width/2;
+    this.ymid = this.d.height/2;
 
     this.rocket_top = parent;
     this.thread = intThread;
@@ -690,9 +699,9 @@ class RocketCanvas {
 
   clearTrails() : void {
     if (this.useTrailBuffer) {
-      //this.d = size();
+      this.d = this.size();
       //this.rocket_top.gBuf2.setColor(Color.black);
-      //this.rocket_top.gBuf2.fillRect(0, 0, d.width, d.height);
+      //this.rocket_top.gBuf2.fillRect(0, 0, this.d.width, this.d.height);
     } else {
       this.trailstart = this.trailstop = 0;
     }
@@ -916,10 +925,10 @@ class RocketThread {
   scalmx : number =0.1;
 
   first : boolean =true;
-  kmax : number; // int
-  kopt: number; // int
+  kmax : number = 0; // int
+  kopt: number = 0; // int
   epsold : number = -1.0;
-  xnew : number;
+  xnew : number = 0.0;
   kmaxx : number; // int
   imaxx : number; // int
   ysav : number[];
@@ -963,18 +972,18 @@ class RocketThread {
   resetQueued : boolean;
   running : boolean;
 
-  captureradius : number;
-  lastDist : number;
-  baseDist : number;
+  captureradius : number = 0.0;
+  lastDist : number = 0.0;
+  baseDist : number = 0.0;
   defaultDist : number;
 
-  launched : boolean;
-  launched2 : boolean;
+  launched : boolean = false;
+  launched2 : boolean = false;
   capture : number; // int
-  homeplanet : number; // int
-  destplanet : number; // int
-  realdestplanet : number; // int
-  launch2 : number;
+  homeplanet : number = 3; // int
+  destplanet : number = -1; // int
+  realdestplanet : number = -1; // int
+  launch2 : number = 0.0;
   vfuel : number;
 
   start : number[] = [ 2450120.5,    // JD

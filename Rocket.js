@@ -1,23 +1,22 @@
+"use strict";
 document.body.textContent = "begin";
 // This version is a straight port of http://user.astro.wisc.edu/~dolan/java/nbody/Rocket.java changing as little as possible, warts and all.
 // Earlier I tried to port + clean up in one go, but it was too hard to understand all the ancient Java code.
-var Rocket = /** @class */ (function () {
-    function Rocket() {
+class Rocket {
+    constructor() {
         /*
-        // Double buffering Objects
+          // Double buffering Objects
           public Image buf, buf2;                 // bitmap for double buffering
           public Graphics gBuf, gBuf2;             // gc to draw on bitmap
           public int width, height;
         
-        // GUI objects -- Should be unless absolutely necessary
+          // GUI objects -- Should be unless absolutely necessary
           Font font;
           Button resetbutton, optbutton, optbutton2, helpbutton, helpbutton2;
           public Button runbutton;
           Button timeUp, timeDown, zoomIn, zoomOut;
-          public RocketCanvas canvas;
           Panel center, options, help;
           CardLayout card;
-          RocketThread intThread;
           Label time, timestep, zoom;
           Choice centermenu, destmenu;
           TextField astDistText, astTanVelText, astRadVelText;
@@ -39,177 +38,7 @@ var Rocket = /** @class */ (function () {
         this.ready = false;
         this.RocketMode = true;
         this.AsteroidMode = false;
-        /*
-          boolean itemStateChanged(Event event) {
-            Object target = event.target;
-        
-            if (target == BSCheckbox) {
-              useBSstep = BSCheckbox.getState();
-              intThread.queueReset();
-            } else if (target == twoDCheckbox) {
-              use2D = twoDCheckbox.getState();
-              intThread.queueReset();
-            } else if (target == captureCheckbox) {
-              usecapture = captureCheckbox.getState();
-              intThread.queueReset();
-            } else if (target == trailsCheckbox) {
-              drawtrails = trailsCheckbox.getState();
-              canvas.clearTrails();
-            } else if (target == useCheckbox[0]) {
-              intThread.use[0] = useCheckbox[0].getState();
-            } else if (target == useCheckbox[1]) {
-              intThread.use[1] = useCheckbox[1].getState();
-            } else if (target == useCheckbox[2]) {
-              intThread.use[2] = useCheckbox[2].getState();
-            } else if (target == useCheckbox[3]) {
-              intThread.use[3] = useCheckbox[3].getState();
-            } else if (target == useCheckbox[4]) {
-              intThread.use[4] = useCheckbox[4].getState();
-            } else if (target == useCheckbox[5]) {
-              intThread.use[5] = useCheckbox[5].getState();
-            } else if (target == useCheckbox[6]) {
-              intThread.use[6] = useCheckbox[6].getState();
-            } else if (target == useCheckbox[7]) {
-              intThread.use[7] = useCheckbox[7].getState();
-            } else if (target == useCheckbox[8]) {
-              intThread.use[8] = useCheckbox[8].getState();
-            } else if (target == useCheckbox[9]) {
-              intThread.use[9] = useCheckbox[9].getState();
-            } else if (target == useCheckbox[10]) {
-              intThread.use[10] = useCheckbox[10].getState();
-            } else if (target == centermenu) {
-              int i,j,n;
-              n = centermenu.getSelectedIndex();
-              for (i=0,j=0; i<n; i++,j++)
-            while (!intThread.use[j])
-              j++;
-              canvas.setCenter(j);
-            } else {
-              if (RocketMode) {
-            if (target == destmenu) {
-              int i,j,n;
-              n = destmenu.getSelectedIndex();
-              for (i=0,j=0; i<n; i++,j++)
-                while (!intThread.use[j])
-                  j++;
-              intThread.realdestplanet = j;
-            } else {
-              return false;
-            }
-              } else {
-            return false;
-              }
-            }
-            return true;
-          }
-        */
-        /*
-          boolean actionPerformed(Event event) {
-            Object target = event.target;
-        
-            if (target == intThread) {
-              if (event.arg == canvas) {
-            canvas.capture(intThread.capture);
-              } else {
-            setUnready();
-            setTime();
-            canvas.update(canvas.getGraphics());
-              }
-            } else if (target == optbutton) {
-              card.show(this, "Options");
-            } else if (target == helpbutton) {
-              card.show(this, "Help");
-            } else if (target == helpbutton2) {
-              card.show(this, "Plot");
-            } else if (target == resetbutton) {
-              if (threadstarted) {
-            if (running) {
-              intThread.queueReset();
-            } else {
-              intThread.queueReset();
-              intThread.resume();
-            }
-              }
-            } else if (target == runbutton) {
-              if (!running) {
-            if (!threadstarted) {
-              threadstarted = true;
-              intThread.start();
-            } else {
-            }
-            runbutton.setLabel("Stop");
-            running = true;
-            intThread.running = true;
-            intThread.resume();
-              } else {
-            runbutton.setLabel("Run");
-            running = false;
-            intThread.running = false;
-              }
-            } else if (target == timeUp) {
-              intThread.adjustTimeStepUp(true);
-              setTimeStep();
-            } else if (target == timeDown) {
-              intThread.adjustTimeStepUp(false);
-              setTimeStep();
-            } else if (target == zoomIn) {
-              canvas.ZoomIn(true);
-              zoom.setText(Double.toString(Math.floor(100000.0*canvas.zoom)/100000.0)+"     ");
-            } else if (target == zoomOut) {
-              canvas.ZoomIn(false);
-              zoom.setText(Double.toString(Math.floor(100000.0*canvas.zoom)/100000.0)+"     ");
-            } else if (target == optbutton2) {
-              if (RocketMode) {
-            intThread.doRocket(1, new Double(astAngText.getText()).doubleValue(),
-                       new Double(astVelText.getText()).doubleValue(),
-                       new Double(astDayText.getText()).doubleValue());
-            intThread.doRocket(2, new Double(astAngText2.getText()).doubleValue(),
-                       new Double(astVelText2.getText()).doubleValue(),
-                       new Double(astDayText2.getText()).doubleValue());
-            card.show(this, "Plot");
-              } else {
-            intThread.doAsteroid(new Double(astDistText.getText()).doubleValue(),
-                         new Double(astAngText.getText()).doubleValue(),
-                         new Double(astTanVelText.getText()).doubleValue(),
-                         new Double(astRadVelText.getText()).doubleValue());
-            card.show(this, "Plot");
-              }
-            } else {
-              return false;
-            }
-            return true;
-          }
-        */
-        /*
-          synchronized boolean handleEvent(Event event) {
-            if (!startHandler) {
-              return super.handleEvent(event);
-            }
-        
-            if (event.id == Event.ACTION_EVENT) {
-              if (itemStateChanged(event) || actionPerformed(event))
-            return true;
-              else
-            return super.handleEvent(event);
-            } else
-              return super.handleEvent(event);
-          }
-        
-          synchronized boolean isReady() {
-            return ready;
-          }
-        
-          synchronized void setReady() {
-            ready = true;
-          }
-        
-          synchronized void setUnready() {
-            ready = false;
-          }
-        */
-    }
-    Rocket.prototype.init = function () {
-        var i;
+        let i;
         /*
             Panel panel, bottom, current;
         
@@ -243,9 +72,10 @@ var Rocket = /** @class */ (function () {
         this.running = false;
         this.threadstarted = false;
         this.ready = true;
+        this.intThread = new RocketThread(this);
+        this.canvas = new RocketCanvas(this, this.intThread);
         /*
-            intThread = new RocketThread(this);
-            intThread.setPriority(Thread.MIN_PRIORITY);
+           intThread.setPriority(Thread.MIN_PRIORITY);
              
            setBackground(Color.lightGray);
             setFont(font = new Font("Helvetica", Font.PLAIN, 12));
@@ -547,7 +377,7 @@ var Rocket = /** @class */ (function () {
             HelpText.appendText("\n");
         */
         this.startHandler = true;
-    };
+    }
     /*
       getParams() : void {
         this.RocketMode = false;
@@ -570,29 +400,36 @@ var Rocket = /** @class */ (function () {
         gBuf.dispose();
       }
     */
-    Rocket.prototype.setTime = function () {
-        var time; // TODO
-        var intThread; // TODO
-        time.setText("" + (intThread.pos[0] / (intThread.tscale * 86400.0)) + "      ");
-    };
-    Rocket.prototype.setTimeStep = function () {
-        var timestep; // TODO
-        var intThread; // TODO
-        if (intThread.timeTweak == 0.0)
-            timestep.setText("" + (intThread.tstep / (intThread.tscale * 86400.0)) + "     ");
-        else
-            timestep.setText("" + (intThread.tstep * intThread.timeTweak / (intThread.tscale * 86400.0)) + "      ");
-    };
-    return Rocket;
-}());
-var Dimension = /** @class */ (function () {
-    function Dimension() {
+    setTime() {
+        //time.setText("" + (this.intThread.pos[0]/(this.intThread.tscale*86400.0))+"      ");
     }
-    return Dimension;
-}());
-var RocketCanvas = /** @class */ (function () {
-    function RocketCanvas(parent, intThread) {
-        var i;
+    setTimeStep() {
+        //if (this.intThread.timeTweak == 0.0)
+        //  timestep.setText("" + (this.intThread.tstep/(this.intThread.tscale*86400.0))+"     ");
+        //else
+        //  timestep.setText("" + (this.intThread.tstep*this.intThread.timeTweak/(this.intThread.tscale*86400.0))+"      ");
+    }
+}
+class Dimension {
+    constructor() {
+        this.width = 0.0;
+        this.height = 0.0;
+    }
+}
+class RocketCanvas {
+    size() {
+        // TODO
+        let dd = new Dimension();
+        dd.width = 400;
+        dd.height = 400;
+        return dd;
+    }
+    constructor(parent, intThread) {
+        this.d = new Dimension();
+        let i;
+        this.d = this.size();
+        this.xmid = this.d.width / 2;
+        this.ymid = this.d.height / 2;
         this.rocket_top = parent;
         this.thread = intThread;
         this.useDoubleBuffer = true;
@@ -618,8 +455,8 @@ var RocketCanvas = /** @class */ (function () {
         if (this.useTrailBuffer)
             this.clearTrails();
     }
-    RocketCanvas.prototype.ZoomIn = function (is_in) {
-        var amt = 1.5;
+    ZoomIn(is_in) {
+        let amt = 1.5;
         this.scale /= this.zoom;
         if (is_in)
             this.zoom *= 1.5;
@@ -629,23 +466,23 @@ var RocketCanvas = /** @class */ (function () {
         //update(getGraphics());
         if (this.useTrailBuffer)
             this.clearTrails();
-    };
-    RocketCanvas.prototype.setCenter = function (c) {
+    }
+    setCenter(c) {
         this.centerOn = c;
         //update(getGraphics());
         if (this.useTrailBuffer)
             this.clearTrails();
-    };
-    RocketCanvas.prototype.clearTrails = function () {
+    }
+    clearTrails() {
         if (this.useTrailBuffer) {
-            //this.d = size();
+            this.d = this.size();
             //this.rocket_top.gBuf2.setColor(Color.black);
-            //this.rocket_top.gBuf2.fillRect(0, 0, d.width, d.height);
+            //this.rocket_top.gBuf2.fillRect(0, 0, this.d.width, this.d.height);
         }
         else {
             this.trailstart = this.trailstop = 0;
         }
-    };
+    }
     //void drawCenteredString(Graphics g, String s, int x, int y) {
     //  FontMetrics f = g.getFontMetrics(g.getFont());
     //  g.drawString(s, x - f.stringWidth(s)/2, y + f.getHeight()/2);
@@ -788,11 +625,11 @@ var RocketCanvas = /** @class */ (function () {
         g.drawString(s, xmid - w/2, ymid + h/2);
       }
     */
-    RocketCanvas.prototype.capture = function (n) {
-        var i;
-        var x;
-        var y;
-        var z;
+    capture(n) {
+        let i;
+        let x;
+        let y;
+        let z;
         if (this.rocket_top.drawtrails && this.useTrailBuffer) {
             i = this.thread.nobj - 1;
             x = this.xmid + Math.floor(this.d.width * this.scale * (this.thread.pos[i * 6 + 1] - this.thread.pos[this.centerOn * 6 + 1]));
@@ -803,14 +640,13 @@ var RocketCanvas = /** @class */ (function () {
             //drawCenteredString(rocket_top.gBuf2, "arrived", x, y-15);
             this.launched = false;
         }
-    };
-    return RocketCanvas;
-}());
-var RocketThread = /** @class */ (function () {
+    }
+}
+class RocketThread {
     //	     -0.1108571,  0.6454034,  0.2973650, -0.02005303,  -0.00340512,  -0.00026263,   // Venus, 24409920.5
     //            0.6827481,  0.2361149,  0.0630089, -0.00681826,   0.01715097,   0.00814731,   // Venus 2450320.5
     //	     13.01258,  -13.68721,   -6.17881,    0.002944503,  0.002214815,  0.000928295,  // Uranus, 2451040.5
-    function RocketThread(parent) {
+    constructor(parent) {
         this.a2 = 0.2;
         this.a3 = 0.3;
         this.a4 = 0.6;
@@ -847,11 +683,23 @@ var RocketThread = /** @class */ (function () {
         this.tiny = 1.0e-30;
         this.scalmx = 0.1;
         this.first = true;
+        this.kmax = 0; // int
+        this.kopt = 0; // int
         this.epsold = -1.0;
+        this.xnew = 0.0;
         this.nseq = [0, 2, 4, 6, 8, 10, 12, 14, 16, 18, 0];
         this.names = ["Sun", "Mercury", "Venus", "Earth", "Mars",
             "Jupiter", "Saturn", "Uranus", "Neptune",
             "Pluto", "Rocket"];
+        this.captureradius = 0.0;
+        this.lastDist = 0.0;
+        this.baseDist = 0.0;
+        this.launched = false;
+        this.launched2 = false;
+        this.homeplanet = 3; // int
+        this.destplanet = -1; // int
+        this.realdestplanet = -1; // int
+        this.launch2 = 0.0;
         this.start = [2450120.5, // JD
             //   X           Y            Z         dX/dt          dY/dt        dZ/dt
             //  (au)        (au)         (au)      (au/day)       (au/day)     (au/day)
@@ -866,7 +714,7 @@ var RocketThread = /** @class */ (function () {
             12.95617, -25.09561, -10.59449, 0.002821829, 0.001292370, 0.000458749, // Neptune
             -14.07658, -26.07059, -3.89443, 0.002854335, -0.001553801, -0.001342638, // Pluto
             -0.7275681, 0.6107332, 0.2647897, -0.01189440, -0.01170492, -0.00507485]; // Rocket
-        var tweak;
+        let tweak;
         this.rocket_top = parent;
         if (this.rocket_top.RocketMode) {
             // Tweak Venus: use coords for JD 2450320.5
@@ -963,16 +811,16 @@ var RocketThread = /** @class */ (function () {
         this.realdestplanet = 4;
         this.reset();
     }
-    RocketThread.prototype.fixCoords = function () {
-        var m;
-        var x;
-        var y;
-        var r;
-        var r2;
-        var t;
-        var theta;
-        var i;
-        var j;
+    fixCoords() {
+        let m;
+        let x;
+        let y;
+        let r;
+        let r2;
+        let t;
+        let theta;
+        let i;
+        let j;
         // Rotate the "start" vector so we are looking at the Earth-Sun
         // plane with no inclination
         m = [];
@@ -1121,7 +969,7 @@ var RocketThread = /** @class */ (function () {
             }
         }
         if (this.rocket_top.AsteroidMode) {
-            var tweak = void 0;
+            let tweak;
             // Tweak the distance to put it out at the Asteroid Belt
             //    tweak = 1.15;
             tweak = 2.5;
@@ -1134,16 +982,16 @@ var RocketThread = /** @class */ (function () {
             this.start[10 * 6 + 5] *= 1.0 / Math.sqrt(tweak);
             this.start[10 * 6 + 6] *= 1.0 / Math.sqrt(tweak);
         }
-    };
-    RocketThread.prototype.adjustTimeStepUp = function (up) {
-        var amt = 2.0;
+    }
+    adjustTimeStepUp(up) {
+        let amt = 2.0;
         if (up)
             this.timeTweak *= amt;
         else
             this.timeTweak *= 1.0 / amt;
-    };
-    RocketThread.prototype.reset = function () {
-        var i;
+    }
+    reset() {
+        let i;
         // Convert JD to sec
         this.pos[0] = (this.start[0] - 2450000.0) * 86400.0 * this.tscale;
         // Renormalize the time scale
@@ -1172,10 +1020,10 @@ var RocketThread = /** @class */ (function () {
         this.destplanet = this.realdestplanet;
         this.launch2 = 0.0;
         this.lastDist = this.baseDist = this.defaultDist;
-    };
-    RocketThread.prototype.doAsteroid = function (dist, ang, tanvel, radvel) {
-        var i;
-        var a;
+    }
+    doAsteroid(dist, ang, tanvel, radvel) {
+        let i;
+        let a;
         this.astDist = dist;
         this.astAng = ang;
         this.astTanVel = tanvel;
@@ -1194,8 +1042,8 @@ var RocketThread = /** @class */ (function () {
         this.start[(this.nobj - 1) * 6 + 5] += this.astRadVel * (86400.0 / 1.496e8) * Math.sin(a - (this.astAng + 180.0) * Math.PI / 180.0);
         this.queueReset();
         this.rocket_top.astinput = true;
-    };
-    RocketThread.prototype.doRocket = function (n, ang, vel, day) {
+    }
+    doRocket(n, ang, vel, day) {
         if (n == 1) {
             this.astAng = ang;
             this.astVel = vel;
@@ -1208,15 +1056,15 @@ var RocketThread = /** @class */ (function () {
         }
         this.queueReset();
         this.rocket_top.astinput = true;
-    };
-    RocketThread.prototype.checkLaunch = function () {
-        var a;
-        var ang;
-        var vel;
-        var day;
-        var fuel;
-        var order;
-        var sign;
+    }
+    checkLaunch() {
+        let a;
+        let ang;
+        let vel;
+        let day;
+        let fuel;
+        let order;
+        let sign;
         if (this.homeplanet == 3) {
             ang = this.astAng;
             vel = this.astVel;
@@ -1273,7 +1121,7 @@ var RocketThread = /** @class */ (function () {
                 }
             }
         }
-    };
+    }
     /*
        This function checks if the rocket/asteroid is near any planets.
        If it is close enough, it lands on or collides with the planet.
@@ -1282,29 +1130,29 @@ var RocketThread = /** @class */ (function () {
        collision happens or not; thus I interpolate between timesteps to
        check for collisions.
     */
-    RocketThread.prototype.checkRocket = function () {
-        var i;
-        var j;
-        var k;
-        var mini; // int
-        var radius;
-        var dx;
-        var dy;
-        var dz;
-        var min;
-        var min2;
-        var mint;
-        var r2;
-        var t;
-        var dx1;
-        var dx2;
-        var dy1;
-        var dy2;
-        var denom;
-        var xa;
-        var xb;
-        var ya;
-        var yb;
+    checkRocket() {
+        let i;
+        let j;
+        let k;
+        let mini; // int
+        let radius;
+        let dx;
+        let dy;
+        let dz;
+        let min;
+        let min2;
+        let mint;
+        let r2;
+        let t;
+        let dx1;
+        let dx2;
+        let dy1;
+        let dy2;
+        let denom;
+        let xa;
+        let xb;
+        let ya;
+        let yb;
         min = min2 = mint = 1.0e20;
         mini = 0;
         j = (this.nobj - 1) * 6;
@@ -1356,10 +1204,10 @@ var RocketThread = /** @class */ (function () {
                     else if (r2 < this.baseDist) {
                         // The rocket has just started moving away from the
                         // destination planet
-                        var s = void 0;
-                        var a1 = void 0;
-                        var a2 = void 0;
-                        var a = void 0;
+                        let s;
+                        let a1;
+                        let a2;
+                        let a;
                         this.baseDist = this.lastDist = r2;
                         // Calculate angle between planet and rocket in terms of
                         // motion of the planet
@@ -1394,7 +1242,7 @@ var RocketThread = /** @class */ (function () {
         } */
         if (i < this.nobj - 1) { // i.e. we did a "break" before and we are captured
             if (this.rocket_top.RocketMode) {
-                var traveltime = void 0;
+                let traveltime;
                 if (i == 3) {
                     traveltime = this.pos[0] / (86400.0 * this.tscale) - this.launch2 - this.astDay2;
                     if (traveltime < 500.0)
@@ -1433,17 +1281,17 @@ var RocketThread = /** @class */ (function () {
                 this.use[10] = false; // Remove the asteroid from the simulation
             }
         }
-    };
-    RocketThread.prototype.force = function (t, r, dr) {
-        var i;
-        var j;
-        var k;
-        var l;
-        var radius;
-        var accel;
-        var dx;
-        var dy;
-        var dz;
+    }
+    force(t, r, dr) {
+        let i;
+        let j;
+        let k;
+        let l;
+        let radius;
+        let accel;
+        let dx;
+        let dy;
+        let dz;
         for (k = 0; k < this.nobj; k++) {
             i = 6 * k;
             if (!this.use[k]) {
@@ -1482,9 +1330,9 @@ var RocketThread = /** @class */ (function () {
                 }
             }
         }
-    };
-    RocketThread.prototype.rk = function (x, h) {
-        var i;
+    }
+    rk(x, h) {
+        let i;
         for (i = 1; i < this.n; i++)
             this.aytemp[i] = this.y[i] + this.b21 * h * this.dydx[i];
         this.force(x + this.a2 * h, this.aytemp, this.ak2);
@@ -1504,12 +1352,12 @@ var RocketThread = /** @class */ (function () {
             this.ytemp[i] = this.y[i] + h * (this.c1 * this.dydx[i] + this.c3 * this.ak3[i] + this.c4 * this.ak4[i] + this.c6 * this.ak6[i]);
         for (i = 1; i < this.n; i++)
             this.yerr[i] = h * (this.dc1 * this.dydx[i] + this.dc3 * this.ak3[i] + this.dc4 * this.ak4[i] + this.dc5 * this.ak5[i] + this.dc6 * this.ak6[i]);
-    };
-    RocketThread.prototype.rkqs = function (hv, htry, eps) {
-        var i;
-        var errmax;
-        var h;
-        var maxarg;
+    }
+    rkqs(hv, htry, eps) {
+        let i;
+        let errmax;
+        let h;
+        let maxarg;
         h = htry;
         for (;;) {
             this.rk(hv[0], h);
@@ -1539,14 +1387,14 @@ var RocketThread = /** @class */ (function () {
                 break;
             }
         }
-    };
-    RocketThread.prototype.mmid = function (hv, htot, nstep) {
-        var nx; // int
-        var i;
-        var x;
-        var swap;
-        var h2;
-        var h;
+    }
+    mmid(hv, htot, nstep) {
+        let nx; // int
+        let i;
+        let x;
+        let swap;
+        let h2;
+        let h;
         h = htot / nstep;
         for (i = 1; i < this.n; i++) {
             this.ym[i] = this.y[i];
@@ -1569,14 +1417,14 @@ var RocketThread = /** @class */ (function () {
         }
         for (i = 1; i < this.n; i++)
             this.yseq[i] = 0.5 * (this.ym[i] + this.yn[i] + h * this.yseq[i]);
-    };
-    RocketThread.prototype.pzextr = function (iest, xest) {
-        var k1; // int
-        var j; // int
-        var q;
-        var f2;
-        var f1;
-        var delta;
+    }
+    pzextr(iest, xest) {
+        let k1; // int
+        let j; // int
+        let q;
+        let f2;
+        let f1;
+        let delta;
         this.xv[iest] = xest;
         for (j = 1; j < this.n; j++)
             this.yerr[j] = this.y[j] = this.yseq[j];
@@ -1603,24 +1451,24 @@ var RocketThread = /** @class */ (function () {
             for (j = 1; j < this.n; j++)
                 this.dv[j][iest] = this.yerr[j];
         }
-    };
-    RocketThread.prototype.bsstep = function (hv, htry, eps) {
-        var i;
-        var iq;
-        var k;
-        var kk;
-        var km = 1;
-        var eps1;
-        var errmax = this.tiny;
-        var fact;
-        var hh;
-        var red = 1.0;
-        var scale = 1.0;
-        var work;
-        var wrkmin;
-        var xest;
-        var reduct;
-        var exitflag = false;
+    }
+    bsstep(hv, htry, eps) {
+        let i;
+        let iq;
+        let k;
+        let kk;
+        let km = 1;
+        let eps1;
+        let errmax = this.tiny;
+        let fact;
+        let hh;
+        let red = 1.0;
+        let scale = 1.0;
+        let work;
+        let wrkmin;
+        let xest;
+        let reduct;
+        let exitflag = false;
         if (eps != this.epsold) {
             hv[2] = this.xnew = -1.0e29;
             eps1 = this.safe1 * eps;
@@ -1723,16 +1571,16 @@ var RocketThread = /** @class */ (function () {
                 this.kopt++;
             }
         }
-    };
-    RocketThread.prototype.odeint = function (ystart, x1, x2, eps, h1, hmin) {
-        var nstp;
-        var i;
-        var j;
-        var good;
-        var bad;
-        var xsav;
-        var h;
-        var scal;
+    }
+    odeint(ystart, x1, x2, eps, h1, hmin) {
+        let nstp;
+        let i;
+        let j;
+        let good;
+        let bad;
+        let xsav;
+        let h;
+        let scal;
         good = bad = 0;
         this.hv[0] = x1;
         h = (x2 > x1 ? Math.abs(h1) : -Math.abs(h1));
@@ -1789,8 +1637,8 @@ var RocketThread = /** @class */ (function () {
             h = this.hv[2];
         }
         console.log("Too many steps in routine odeint");
-    };
-    RocketThread.prototype.queueReset = function () {
+    }
+    queueReset() {
         this.rocket_top.canvas.clearTrails();
         if (this.rocket_top.threadstarted) {
             if (this.rocket_top.running)
@@ -1801,10 +1649,10 @@ var RocketThread = /** @class */ (function () {
                 this.resetQueued = false;
             }
         }
-    };
-    RocketThread.prototype.run = function () {
-        var tweak;
-        var i;
+    }
+    run() {
+        let tweak;
+        let i;
         while (true) {
             if (this.timeTweak != 1.0) {
                 this.tstep *= this.timeTweak;
@@ -1847,12 +1695,11 @@ var RocketThread = /** @class */ (function () {
                 //suspend();
             }
         }
-    };
-    RocketThread.prototype.refresh = function () {
+    }
+    refresh() {
         //this.rocket_top.deliverEvent(new Event(this, Event.ACTION_EVENT, this));
-    };
-    RocketThread.prototype.refreshcanvas = function () {
+    }
+    refreshcanvas() {
         //this.rocket_top.deliverEvent(new Event(this, Event.ACTION_EVENT, this.rocket_top.canvas));
-    };
-    return RocketThread;
-}());
+    }
+}

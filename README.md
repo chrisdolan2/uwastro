@@ -16,4 +16,4 @@ Update to the newest npm: `sudo npm install -g npm`
 
 `npm install typescript`
 
-`tsc --lib es2015,dom Rocket.ts`
+`tsc`
