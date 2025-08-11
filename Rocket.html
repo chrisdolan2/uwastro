@@ -5,18 +5,39 @@
   <title>Univ Wisconsin Astronomy Rocket Simulator</title>
   <link rel="alternate" href="https://github.com/chrisdolan2/uwastro"/>
   <script src="Rocket.js" defer=""></script>
+  <script>
+    function toggleHelp() {
+        var help = document.getElementById("help-text");
+        if (help.style.display == "none") {
+            help.style.display = "";
+        } else {
+            help.style.display = "none";
+        }
+    }
+  </script>
 </head>
 <body>
   <canvas style="width:100%" id="canvas">
   </canvas>
   <div>
+    <input type="checkbox" id="drawtrails"/> Draw trails
+    <button id="run">Run</button>
+    <button id="restart">Restart</button>
+    <button id="options">Options</button>
+    <button id="help" onClick="toggleHelp();">Help</button>
+  </div>
+  <hr />
+  <div>
     <p>
       Time: <span id="time"></span><br/>
+      <button id="timestep-plus">+</button> <button id="timestep-minus">-</button>
       Timestep: <span id="timestep"></span><br/>
+      <button id="zoom-plus">+</button> <button id="zoom-minus">-</button>
       Zoom: <span id="zoom"></span>
      </p>
   </div>
-  <div id="help">
+  <hr />
+  <div id="help-text" style="display: none">
     (this is the original help text from the Java application, lightly edited)<br />
     Help for Rocket/Asteroid Applet -- Chris Dolan, UWisc Astronomy, 1998<br />
     <br />
