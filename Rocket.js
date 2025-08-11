@@ -22,6 +22,20 @@ class JEvent {
     }
 }
 JEvent.ACTION_EVENT = 1;
+// Wrapper around an HTML button
+class JButton {
+    constructor(id, parent) {
+        let b = document.getElementById(id);
+        if (!(b instanceof HTMLButtonElement)) {
+            throw new Error("Missing button: " + id);
+        }
+        this.html_button = b;
+        this.html_button.addEventListener("click", () => parent.deliverEvent(new JEvent(this, JEvent.ACTION_EVENT, null)));
+    }
+    setLabel(s) {
+        this.html_button.innerHTML = s;
+    }
+}
 class Rocket {
     populateCenterOnMenu() {
         let centermenu = document.getElementById("center-on");
@@ -39,9 +53,7 @@ class Rocket {
     }
     constructor() {
         /*
-          Button resetbutton, optbutton, optbutton2, helpbutton, helpbutton2;
-          public Button runbutton;
-          Button timeUp, timeDown, zoomIn, zoomOut;
+          Button optbutton, optbutton2, helpbutton, helpbutton2;
           Choice centermenu, destmenu;
           TextField astDistText, astTanVelText, astRadVelText;
           TextField astVelText, astDayText, astAngText;
@@ -49,6 +61,12 @@ class Rocket {
           Checkbox trailsCheckbox, BSCheckbox, twoDCheckbox, captureCheckbox;
           Checkbox useCheckbox[];
         */
+        this.runbutton = new JButton("run", this);
+        this.resetbutton = new JButton("restart", this);
+        this.timeUp = new JButton("timestep-plus", this);
+        this.timeDown = new JButton("timestep-minus", this);
+        this.zoomIn = new JButton("zoom-plus", this);
+        this.zoomOut = new JButton("zoom-minus", this);
         this.time = new Label("time");
         this.timestep = new Label("timestep");
         this.zoom = new Label("zoom");
@@ -411,43 +429,54 @@ class Rocket {
                   card.show(this, "Help");
                 } else if (target == helpbutton2) {
                   card.show(this, "Plot");
-                } else if (target == resetbutton) {
-                  if (threadstarted) {
-                if (running) {
-                  intThread.queueReset();
-                } else {
-                  intThread.queueReset();
-                  intThread.resume();
+            */
+        }
+        else if (target == this.resetbutton) {
+            if (this.threadstarted) {
+                if (this.running) {
+                    this.intThread.queueReset();
                 }
-                  }
-                } else if (target == runbutton) {
-                  if (!running) {
-                if (!threadstarted) {
-                  threadstarted = true;
-                  intThread.start();
-                } else {
+                else {
+                    this.intThread.queueReset();
+                    //this.intThread.resume(); TODO
                 }
-                runbutton.setLabel("Stop");
-                running = true;
-                intThread.running = true;
-                intThread.resume();
-                  } else {
-                runbutton.setLabel("Run");
-                running = false;
-                intThread.running = false;
-                  }
-                } else if (target == timeUp) {
-                  intThread.adjustTimeStepUp(true);
-                  setTimeStep();
-                } else if (target == timeDown) {
-                  intThread.adjustTimeStepUp(false);
-                  setTimeStep();
-                } else if (target == zoomIn) {
-                  canvas.ZoomIn(true);
-                  this.setZoom();
-                } else if (target == zoomOut) {
-                  canvas.ZoomIn(false);
-                  this.setZoom();
+            }
+        }
+        else if (target == this.runbutton) {
+            if (!this.running) {
+                if (!this.threadstarted) {
+                    this.threadstarted = true;
+                    //this.intThread.start(); TODO
+                }
+                else {
+                }
+                this.runbutton.setLabel("Stop");
+                this.running = true;
+                this.intThread.running = true;
+                //this.intThread.resume(); TODO
+            }
+            else {
+                this.runbutton.setLabel("Run");
+                this.running = false;
+                this.intThread.running = false;
+            }
+        }
+        else if (target == this.timeUp) {
+            this.intThread.adjustTimeStepUp(true);
+            this.setTimeStep();
+        }
+        else if (target == this.timeDown) {
+            this.intThread.adjustTimeStepUp(false);
+            this.setTimeStep();
+        }
+        else if (target == this.zoomIn) {
+            this.canvas.ZoomIn(true);
+            this.setZoom();
+        }
+        else if (target == this.zoomOut) {
+            this.canvas.ZoomIn(false);
+            this.setZoom();
+            /*
                 } else if (target == optbutton2) {
                   if (RocketMode) {
                 intThread.doRocket(1, new Double(astAngText.getText()).doubleValue(),
@@ -712,27 +741,20 @@ class RocketCanvas {
         // calls clearRect first, causing unwanted flicker
         this.paint(g);
     }
-    /*
-      paintCapture(g : CanvasRenderingContext2D, n : number) : void {
-        FontMetrics f = g.getFontMetrics(g.getFont());
-        int w,h;
-        String s;
-    
-        d = size();
-        xmid = d.width/2;
-        ymid = d.height/2;
-        
-        s = "Rocket has arrived at "+this.thread.names[n];
-        w = f.stringWidth(s);
-        h = f.getHeight();
-    
-        g.setColor(Color.black);
-        g.fillRect(xmid-w/2-15, ymid-h/2-15, w+30, h+30);
-        
-        g.setColor(Color.yellow);
-        g.drawString(s, xmid - w/2, ymid + h/2);
-      }
-    */
+    // note: this function appears to be unused
+    paintCapture(g, n) {
+        this.d = this.size();
+        this.xmid = this.d.width / 2;
+        this.ymid = this.d.height / 2;
+        let s = "Rocket has arrived at " + this.thread.names[n];
+        let t = g.measureText(s);
+        let w = t.width;
+        let h = t.fontBoundingBoxAscent;
+        g.fillStyle = "black";
+        g.fillRect(this.xmid - w / 2 - 15, this.ymid - h / 2 - 15, w + 30, h + 30);
+        g.fillStyle = "yellow";
+        g.fillText(s, this.xmid - w / 2, this.ymid + h / 2);
+    }
     capture(n) {
         let i;
         let x;
@@ -1760,50 +1782,49 @@ class RocketThread {
         }
     }
     run() {
-        let tweak;
-        let i;
-        while (true) {
-            if (this.timeTweak != 1.0) {
-                this.tstep *= this.timeTweak;
-                this.timeTweak = 1.0;
-            }
-            if (this.resetQueued) {
-                this.reset();
-                this.refresh();
-                this.resetQueued = false;
-            }
-            if (this.running) {
-                if (this.rocket_top.RocketMode)
+        //while (true) {
+        if (this.timeTweak != 1.0) {
+            this.tstep *= this.timeTweak;
+            this.timeTweak = 1.0;
+        }
+        if (this.resetQueued) {
+            this.reset();
+            this.refresh();
+            this.resetQueued = false;
+        }
+        if (this.running) {
+            if (this.rocket_top.RocketMode)
+                this.checkLaunch();
+            for (let i = 0; i <= this.nobj * 6; i++)
+                this.opos[i] = this.pos[i];
+            if (this.rocket_top.RocketMode) {
+                let tweak = (this.homeplanet == 3 ? this.astDay : this.astDay2 + this.launch2) *
+                    86400.0 * this.tscale - this.pos[0];
+                if (!this.launched && tweak * (tweak - this.tstep) < 0.0) {
+                    this.odeint(this.pos, this.pos[0], this.pos[0] + tweak, 1.0e-6, tweak / 10.0, this.tstep * 1.0e-15);
+                    this.pos[0] += tweak;
                     this.checkLaunch();
-                for (i = 0; i <= this.nobj * 6; i++)
-                    this.opos[i] = this.pos[i];
-                if (this.rocket_top.RocketMode) {
-                    tweak = (this.homeplanet == 3 ? this.astDay : this.astDay2 + this.launch2) *
-                        86400.0 * this.tscale - this.pos[0];
-                    if (!this.launched && tweak * (tweak - this.tstep) < 0.0) {
-                        this.odeint(this.pos, this.pos[0], this.pos[0] + tweak, 1.0e-6, tweak / 10.0, this.tstep * 1.0e-15);
-                        this.pos[0] += tweak;
-                        this.checkLaunch();
-                        this.odeint(this.pos, this.pos[0], this.pos[0] + this.tstep - tweak, 1.0e-6, (this.tstep - tweak) / 10.0, this.tstep * 1.0e-15);
-                        this.pos[0] += this.tstep - tweak;
-                    }
-                    else {
-                        this.odeint(this.pos, this.pos[0], this.pos[0] + this.tstep, 1.0e-6, this.tstep / 1.0, this.tstep * 1.0e-15);
-                        this.pos[0] += this.tstep;
-                    }
+                    this.odeint(this.pos, this.pos[0], this.pos[0] + this.tstep - tweak, 1.0e-6, (this.tstep - tweak) / 10.0, this.tstep * 1.0e-15);
+                    this.pos[0] += this.tstep - tweak;
                 }
                 else {
                     this.odeint(this.pos, this.pos[0], this.pos[0] + this.tstep, 1.0e-6, this.tstep / 1.0, this.tstep * 1.0e-15);
                     this.pos[0] += this.tstep;
                 }
-                this.checkRocket();
-                this.refresh();
-                //yield();
             }
             else {
-                //suspend();
+                this.odeint(this.pos, this.pos[0], this.pos[0] + this.tstep, 1.0e-6, this.tstep / 1.0, this.tstep * 1.0e-15);
+                this.pos[0] += this.tstep;
             }
+            this.checkRocket();
+            this.refresh();
+            //yield();
+            window.requestAnimationFrame(() => this.run);
         }
+        else {
+            //suspend();
+        }
+        //}
     }
     refresh() {
         this.rocket_top.deliverEvent(new JEvent(this, JEvent.ACTION_EVENT, this));
