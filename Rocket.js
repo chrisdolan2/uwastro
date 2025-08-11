@@ -595,6 +595,7 @@ class RocketCanvas {
         l = Math.pow(10.0, Math.round(Math.log(l) / Math.log(10.0)));
         ll = Math.floor(0.5 * l * this.thread.dscale * this.scale * 1.496e13 * this.d.width);
         g.fillStyle = "white";
+        g.strokeStyle = "white";
         this.drawLine(g, this.xmid - ll, this.d.height - 8, this.xmid + ll, this.d.height - 8);
         this.drawCenteredString(g, "" + l + " AU", this.xmid, this.d.height - 17);
     }
@@ -677,6 +678,7 @@ class RocketCanvas {
             y = this.ymid - Math.floor(this.d.height * this.scale * (this.thread.pos[i * 6 + 2] - this.thread.pos[this.centerOn * 6 + 2]));
             z = Math.floor(this.d.height * this.scale * this.thread.pos[i * 6 + 3] * 0.2);
             g.fillStyle = "green";
+            g.strokeStyle = "green";
             this.drawLine(g, x, y, x, y - 6);
             this.drawCenteredString(g, "launched", x, y - 15);
             this.launched = true;
@@ -741,9 +743,10 @@ class RocketCanvas {
             x = this.xmid + Math.floor(this.d.width * this.scale * (this.thread.pos[i * 6 + 1] - this.thread.pos[this.centerOn * 6 + 1]));
             y = this.ymid - Math.floor(this.d.height * this.scale * (this.thread.pos[i * 6 + 2] - this.thread.pos[this.centerOn * 6 + 2]));
             z = Math.floor(this.d.height * this.scale * this.thread.pos[i * 6 + 3] * 0.2);
-            //rocket_top.gBuf2.setColor(Color.green);
-            //rocket_top.gBuf2.drawLine(x, y, x, y-6);
-            //drawCenteredString(rocket_top.gBuf2, "arrived", x, y-15);
+            this.ctx.fillStyle = "green";
+            this.ctx.strokeStyle = "green";
+            this.drawLine(this.ctx, x, y, x, y - 6);
+            this.drawCenteredString(this.ctx, "arrived", x, y - 15);
             this.launched = false;
         }
     }
