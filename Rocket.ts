@@ -36,18 +36,9 @@ class Rocket {
   intThread : RocketThread;
 
 /*
-  // Double buffering Objects
-  public Image buf, buf2;                 // bitmap for double buffering
-  public Graphics gBuf, gBuf2;             // gc to draw on bitmap
-  public int width, height;
-
-  // GUI objects -- Should be unless absolutely necessary
-  Font font;
   Button resetbutton, optbutton, optbutton2, helpbutton, helpbutton2;
   public Button runbutton;
   Button timeUp, timeDown, zoomIn, zoomOut;
-  Panel center, options;
-  CardLayout card;
   Choice centermenu, destmenu;
   TextField astDistText, astTanVelText, astRadVelText;
   TextField astVelText, astDayText, astAngText;
@@ -74,17 +65,29 @@ class Rocket {
   RocketMode : boolean = true;
   AsteroidMode : boolean = false;
 
+  populateCenterOnMenu() : void {
+    let centermenu = document.getElementById("center-on");
+    if (!centermenu) throw new Error("Missing select");
+    for (let i : number =0; i<this.intThread.nobj; i++) {
+      if (this.intThread.use[i]) {
+        let option  = document.createElement("option");
+        option.appendChild(document.createTextNode(this.intThread.names[i]));
+        option.setAttribute("value", ""+i);
+        centermenu.appendChild(option);
+      }
+     // centermenu.select(0);
+    }
+  }
+
   constructor() {
     let i : number;
+    this.getParams();
 /*
-    Panel panel, bottom, current;
-
     Dimension d = size();
 
     width = d.width;
     height = d.height;
 
-    getParams();
 
     buf = createImage(width, height);
     gBuf = buf.getGraphics();
@@ -114,6 +117,7 @@ class Rocket {
     this.intThread = new RocketThread(this);
     this.canvas = new RocketCanvas(this, this.intThread);
 
+    this.populateCenterOnMenu();
 /*
    intThread.setPriority(Thread.MIN_PRIORITY);
      
@@ -146,11 +150,6 @@ class Rocket {
     bottom.add(new Label("Center on:"));
 
     centermenu = new Choice();
-    for (i=0; i<intThread.nobj; i++) {
-      if (intThread.use[i])
-	centermenu.addItem(intThread.names[i]);
-      centermenu.select(0);
-    }
     bottom.add(centermenu);
     // centermenu.addItemlistener(this);
 
@@ -321,30 +320,26 @@ class Rocket {
     this.setZoom();
     
     this.startHandler = true;
+    this.canvas.update(this.canvas.getGraphics());
   }
 
-/*
   getParams() : void {
     this.RocketMode = false;
     this.AsteroidMode = false;
 
-    if (getParameter("mode") == null) {
+    let url = window.location.href;
+    if (!url) {
       this.RocketMode = true;
     } else {
-      if (getParameter("mode").equals("Rocket")) {
+      if (url.includes("Rocket.html")) {
 	this.RocketMode = true;
-      } else if (getParameter("mode").equals("Asteroid")) {
+      } else if (url.includes("Asteroid.html")) {
 	this.AsteroidMode = true;
       } else {
 	this.RocketMode = true;
       }
     }
   }
-
-  destroy() : void {
-    gBuf.dispose();
-  }
-*/
 
   setTime() : void {
     this.time.setText("" + (this.intThread.pos[0]/(this.intThread.tscale*86400.0))+"      ");
@@ -583,8 +578,8 @@ class RocketCanvas {
     this.rocket_top = parent;
     this.thread = intThread;
 
-    this.useDoubleBuffer = true;
-    this.useTrailBuffer = true;
+    this.useDoubleBuffer = false;
+    this.useTrailBuffer = false;
 
     this.launched = false;
 
@@ -780,6 +775,10 @@ class RocketCanvas {
   }
 
   paint(g : CanvasRenderingContext2D) : void {
+    console.log("paint");
+    let bbox = this.html_canvas.getBoundingClientRect();
+    this.html_canvas.width = bbox.width;
+    this.html_canvas.height = bbox.height;
     if (this.useDoubleBuffer) {
       //this.paintSky(rocket_top.gBuf);
       //g.drawImage(rocket_top.buf, 0, 0, this);
