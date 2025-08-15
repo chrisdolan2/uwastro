@@ -438,7 +438,7 @@ class Rocket {
                 }
                 else {
                     this.intThread.queueReset();
-                    //this.intThread.resume(); TODO
+                    this.intThread.doResume();
                 }
             }
         }
@@ -446,19 +446,20 @@ class Rocket {
             if (!this.running) {
                 if (!this.threadstarted) {
                     this.threadstarted = true;
-                    //this.intThread.start(); TODO
+                    this.intThread.doStart();
                 }
                 else {
                 }
                 this.runbutton.setLabel("Stop");
                 this.running = true;
                 this.intThread.running = true;
-                //this.intThread.resume(); TODO
+                this.intThread.doResume();
             }
             else {
                 this.runbutton.setLabel("Run");
                 this.running = false;
                 this.intThread.running = false;
+                this.intThread.doStop();
             }
         }
         else if (target == this.timeUp) {
@@ -723,7 +724,6 @@ class RocketCanvas {
         }
     }
     paint(g) {
-        console.log("paint");
         let bbox = this.html_canvas.getBoundingClientRect();
         this.html_canvas.width = bbox.width;
         this.html_canvas.height = bbox.height;
@@ -1781,7 +1781,15 @@ class RocketThread {
             }
         }
     }
-    run() {
+    doStart() {
+    }
+    doStop() {
+    }
+    doResume() {
+        console.log("animationframe req");
+        window.requestAnimationFrame((ts) => this.run(ts));
+    }
+    run(ts) {
         //while (true) {
         if (this.timeTweak != 1.0) {
             this.tstep *= this.timeTweak;
@@ -1819,7 +1827,7 @@ class RocketThread {
             this.checkRocket();
             this.refresh();
             //yield();
-            window.requestAnimationFrame(() => this.run);
+            this.doResume();
         }
         else {
             //suspend();
