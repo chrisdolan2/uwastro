@@ -62,6 +62,10 @@ class JMenu {
     option.setAttribute("value", value);
     this.html_menu.appendChild(option);
   }
+
+  getSelectedIndex() : number {
+    return this.html_menu.selectedIndex;
+  }
 }
 
 class Rocket {
@@ -393,8 +397,16 @@ class Rocket {
   itemStateChanged(event : JEvent) : boolean {
     let target : any = event.target;
 
+    if (target == this.centermenu) {
+      let i : number;
+      let j : number;
+      let n : number = this.centermenu.getSelectedIndex();
+      for (i=0,j=0; i<n; i++,j++)
+	while (!this.intThread.use[j])
+	  j++;
+      this.canvas.setCenter(j);
 /*
-    if (target == BSCheckbox) {
+    } else if (target == BSCheckbox) {
       useBSstep = BSCheckbox.getState();
       intThread.queueReset();
     } else if (target == twoDCheckbox) {
@@ -428,13 +440,6 @@ class Rocket {
       intThread.use[9] = useCheckbox[9].getState();
     } else if (target == useCheckbox[10]) {
       intThread.use[10] = useCheckbox[10].getState();
-    } else if (target == centermenu) {
-      int i,j,n;
-      n = centermenu.getSelectedIndex();
-      for (i=0,j=0; i<n; i++,j++)
-	while (!intThread.use[j])
-	  j++;
-      canvas.setCenter(j);
     } else {
       if (RocketMode) {
 	if (target == destmenu) {
@@ -450,8 +455,8 @@ class Rocket {
       } else {
 	return false;
       }
-    }
     */
+    }
     return false;
   }
 

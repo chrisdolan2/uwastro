@@ -51,6 +51,9 @@ class JMenu {
         option.setAttribute("value", value);
         this.html_menu.appendChild(option);
     }
+    getSelectedIndex() {
+        return this.html_menu.selectedIndex;
+    }
 }
 class Rocket {
     populateCenterOnMenu() {
@@ -361,65 +364,66 @@ class Rocket {
     }
     itemStateChanged(event) {
         let target = event.target;
-        /*
-            if (target == BSCheckbox) {
-              useBSstep = BSCheckbox.getState();
-              intThread.queueReset();
-            } else if (target == twoDCheckbox) {
-              use2D = twoDCheckbox.getState();
-              intThread.queueReset();
-            } else if (target == captureCheckbox) {
-              usecapture = captureCheckbox.getState();
-              intThread.queueReset();
-            } else if (target == trailsCheckbox) {
-              drawtrails = trailsCheckbox.getState();
-              canvas.clearTrails();
-            } else if (target == useCheckbox[0]) {
-              intThread.use[0] = useCheckbox[0].getState();
-            } else if (target == useCheckbox[1]) {
-              intThread.use[1] = useCheckbox[1].getState();
-            } else if (target == useCheckbox[2]) {
-              intThread.use[2] = useCheckbox[2].getState();
-            } else if (target == useCheckbox[3]) {
-              intThread.use[3] = useCheckbox[3].getState();
-            } else if (target == useCheckbox[4]) {
-              intThread.use[4] = useCheckbox[4].getState();
-            } else if (target == useCheckbox[5]) {
-              intThread.use[5] = useCheckbox[5].getState();
-            } else if (target == useCheckbox[6]) {
-              intThread.use[6] = useCheckbox[6].getState();
-            } else if (target == useCheckbox[7]) {
-              intThread.use[7] = useCheckbox[7].getState();
-            } else if (target == useCheckbox[8]) {
-              intThread.use[8] = useCheckbox[8].getState();
-            } else if (target == useCheckbox[9]) {
-              intThread.use[9] = useCheckbox[9].getState();
-            } else if (target == useCheckbox[10]) {
-              intThread.use[10] = useCheckbox[10].getState();
-            } else if (target == centermenu) {
-              int i,j,n;
-              n = centermenu.getSelectedIndex();
-              for (i=0,j=0; i<n; i++,j++)
-            while (!intThread.use[j])
-              j++;
-              canvas.setCenter(j);
-            } else {
-              if (RocketMode) {
-            if (target == destmenu) {
-              int i,j,n;
-              n = destmenu.getSelectedIndex();
-              for (i=0,j=0; i<n; i++,j++)
-                while (!intThread.use[j])
-                  j++;
-              intThread.realdestplanet = j;
-            } else {
-              return false;
-            }
-              } else {
-            return false;
-              }
-            }
-            */
+        if (target == this.centermenu) {
+            let i;
+            let j;
+            let n = this.centermenu.getSelectedIndex();
+            for (i = 0, j = 0; i < n; i++, j++)
+                while (!this.intThread.use[j])
+                    j++;
+            this.canvas.setCenter(j);
+            /*
+                } else if (target == BSCheckbox) {
+                  useBSstep = BSCheckbox.getState();
+                  intThread.queueReset();
+                } else if (target == twoDCheckbox) {
+                  use2D = twoDCheckbox.getState();
+                  intThread.queueReset();
+                } else if (target == captureCheckbox) {
+                  usecapture = captureCheckbox.getState();
+                  intThread.queueReset();
+                } else if (target == trailsCheckbox) {
+                  drawtrails = trailsCheckbox.getState();
+                  canvas.clearTrails();
+                } else if (target == useCheckbox[0]) {
+                  intThread.use[0] = useCheckbox[0].getState();
+                } else if (target == useCheckbox[1]) {
+                  intThread.use[1] = useCheckbox[1].getState();
+                } else if (target == useCheckbox[2]) {
+                  intThread.use[2] = useCheckbox[2].getState();
+                } else if (target == useCheckbox[3]) {
+                  intThread.use[3] = useCheckbox[3].getState();
+                } else if (target == useCheckbox[4]) {
+                  intThread.use[4] = useCheckbox[4].getState();
+                } else if (target == useCheckbox[5]) {
+                  intThread.use[5] = useCheckbox[5].getState();
+                } else if (target == useCheckbox[6]) {
+                  intThread.use[6] = useCheckbox[6].getState();
+                } else if (target == useCheckbox[7]) {
+                  intThread.use[7] = useCheckbox[7].getState();
+                } else if (target == useCheckbox[8]) {
+                  intThread.use[8] = useCheckbox[8].getState();
+                } else if (target == useCheckbox[9]) {
+                  intThread.use[9] = useCheckbox[9].getState();
+                } else if (target == useCheckbox[10]) {
+                  intThread.use[10] = useCheckbox[10].getState();
+                } else {
+                  if (RocketMode) {
+                if (target == destmenu) {
+                  int i,j,n;
+                  n = destmenu.getSelectedIndex();
+                  for (i=0,j=0; i<n; i++,j++)
+                    while (!intThread.use[j])
+                      j++;
+                  intThread.realdestplanet = j;
+                } else {
+                  return false;
+                }
+                  } else {
+                return false;
+                  }
+                */
+        }
         return false;
     }
     actionPerformed(event) {
