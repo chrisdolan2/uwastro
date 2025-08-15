@@ -2022,7 +2022,6 @@ class RocketThread {
   doStop() : void {
   }
   doResume() : void {
-    console.log("animationframe req");
     window.requestAnimationFrame((ts: DOMHighResTimeStamp) => this.run(ts));
   }
 
