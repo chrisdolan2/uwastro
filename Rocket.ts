@@ -46,6 +46,24 @@ class JButton {
   }
 }
 
+class JMenu {
+  html_menu: HTMLSelectElement;
+
+  constructor(id : string, parent : any) {
+    let m = document.getElementById(id);
+    if (!(m instanceof HTMLSelectElement)) {throw new Error("Missing menu: " + id);}
+    this.html_menu = <HTMLSelectElement>m;
+    this.html_menu.addEventListener("click", () => parent.deliverEvent(new JEvent(this, JEvent.ACTION_EVENT, null)));
+  }
+
+  appendChild(name: string, value: string) {
+    let option  = document.createElement("option");
+    option.appendChild(document.createTextNode(name));
+    option.setAttribute("value", value);
+    this.html_menu.appendChild(option);
+  }
+}
+
 class Rocket {
 
   canvas : RocketCanvas;
@@ -69,6 +87,7 @@ class Rocket {
   time : Label = new Label("time");
   timestep : Label = new Label("timestep");
   zoom : Label = new Label("zoom");
+  centermenu : JMenu = new JMenu("center-on", this);
 
 // General variables
   startHandler : boolean = false;
@@ -86,14 +105,9 @@ class Rocket {
   AsteroidMode : boolean = false;
 
   populateCenterOnMenu() : void {
-    let centermenu = document.getElementById("center-on");
-    if (!centermenu) throw new Error("Missing select");
     for (let i : number =0; i<this.intThread.nobj; i++) {
       if (this.intThread.use[i]) {
-        let option  = document.createElement("option");
-        option.appendChild(document.createTextNode(this.intThread.names[i]));
-        option.setAttribute("value", ""+i);
-        centermenu.appendChild(option);
+        this.centermenu.appendChild(this.intThread.names[i], ""+i);
       }
      // centermenu.select(0);
     }

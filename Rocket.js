@@ -36,17 +36,27 @@ class JButton {
         this.html_button.innerHTML = s;
     }
 }
+class JMenu {
+    constructor(id, parent) {
+        let m = document.getElementById(id);
+        if (!(m instanceof HTMLSelectElement)) {
+            throw new Error("Missing menu: " + id);
+        }
+        this.html_menu = m;
+        this.html_menu.addEventListener("click", () => parent.deliverEvent(new JEvent(this, JEvent.ACTION_EVENT, null)));
+    }
+    appendChild(name, value) {
+        let option = document.createElement("option");
+        option.appendChild(document.createTextNode(name));
+        option.setAttribute("value", value);
+        this.html_menu.appendChild(option);
+    }
+}
 class Rocket {
     populateCenterOnMenu() {
-        let centermenu = document.getElementById("center-on");
-        if (!centermenu)
-            throw new Error("Missing select");
         for (let i = 0; i < this.intThread.nobj; i++) {
             if (this.intThread.use[i]) {
-                let option = document.createElement("option");
-                option.appendChild(document.createTextNode(this.intThread.names[i]));
-                option.setAttribute("value", "" + i);
-                centermenu.appendChild(option);
+                this.centermenu.appendChild(this.intThread.names[i], "" + i);
             }
             // centermenu.select(0);
         }
@@ -70,6 +80,7 @@ class Rocket {
         this.time = new Label("time");
         this.timestep = new Label("timestep");
         this.zoom = new Label("zoom");
+        this.centermenu = new JMenu("center-on", this);
         // General variables
         this.startHandler = false;
         this.usecapture = true;
@@ -1786,7 +1797,6 @@ class RocketThread {
     doStop() {
     }
     doResume() {
-        console.log("animationframe req");
         window.requestAnimationFrame((ts) => this.run(ts));
     }
     run(ts) {
