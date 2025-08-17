@@ -377,6 +377,12 @@ class Rocket {
 	this.RocketMode = true;
       }
     }
+    // Set one of the CSS classes to invisible.
+    if (this.RocketMode) {
+      document.styleSheets[0].insertRule(".asteroidmode { display: none; }");
+    } else {
+      document.styleSheets[0].insertRule(".rocketmode { display: none; }");
+    }
   }
 
   setTime() : void {

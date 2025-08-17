@@ -15,6 +15,7 @@
         }
     }
   </script>
+  <style><!-- JS will add rules here for Rocket mode or Asteroid mode --></style>
 </head>
 <body>
   <canvas style="width:100%" id="canvas">
@@ -57,7 +58,8 @@
     <br />
     --- Options Page ---<br />
     <br />
-    RocketMode:<br />
+    <div class="rocketmode">
+      Rocket Mode:<br />
       On the Options screen, you can adjust when the Rocket blasts off from the Earth
           as well as how fast and in which direction it goes.  For the sake of
           simplicity, the launch velocity is a simple speed relative to the Earth,
@@ -78,9 +80,9 @@
           plane of the Earth's orbit.  In 3D physics it is nearly impossible to
           simulate a gravity assist off another planet, since there is no way to
           specify the Rocket's inclination from the Ecliptic plane.<br />
-    <br />
-    <br />
-    AsteroidMode:<br />
+    </div>
+    <div class="asteroidmode">
+      Asteroid Mode:<br />
       On the Options screen, you can enter parameters to specify where the asteroid is
           when you first look at it.  You specify<br />
           (1) how far it is from the Earth, which you can deduce via parallax measurements;<br />
@@ -100,7 +102,7 @@
           or gravity slingshots in the motion of the asteroid.  In 3D space, these encounters
           are extremely rare, since the orbital plane of the Asteroid is inclined to the
           orbits of all the planets except the Earth.<br />
-    <br />
+    </div>
     <br />
     <br />
     --- About this program ---<br />
@@ -120,5 +122,8 @@
     
     </code>
   </div>
+
+<div id="options-rocket">
+</div>
 </body>
 </html>

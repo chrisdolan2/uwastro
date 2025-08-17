@@ -349,6 +349,23 @@ class Rocket {
                 this.RocketMode = true;
             }
         }
+        if (this.RocketMode) {
+            document.styleSheets[0].insertRule(".asteroidmode { display: none; }");
+        }
+        else {
+            document.styleSheets[0].insertRule(".rocketmode { display: none; }");
+        }
+        /*
+        let help_rocket = document.getElementById("help-rocketmode");
+        let help_asteroid = document.getElementById("help-asteroidmode");
+        if (!help_rocket) throw new Error("Missing help");
+        if (!help_asteroid) throw new Error("Missing help");
+        if (this.RocketMode) {
+          help_asteroid.style.display = "none";
+        } else {
+          help_rocket.style.display = "none";
+        }
+        */
     }
     setTime() {
         this.time.setText("" + (this.intThread.pos[0] / (this.intThread.tscale * 86400.0)) + "      ");
