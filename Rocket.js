@@ -159,22 +159,6 @@ class Rocket {
         this.AsteroidMode = false;
         let i;
         this.getParams();
-        /*
-            Dimension d = size();
-        
-            width = d.width;
-            height = d.height;
-        
-        
-            buf = createImage(width, height);
-            gBuf = buf.getGraphics();
-            buf2 = createImage(width, height);
-            gBuf2 = buf2.getGraphics();
-        
-            gBuf.setFont(font = new Font("Helvetica", Font.PLAIN, 10));
-            gBuf2.setColor(Color.black);
-            gBuf2.fillRect(0, 0, width, height);
-        */
         if (this.RocketMode) {
             this.usecapture = true;
             this.use2D = true;
@@ -472,11 +456,17 @@ class RocketCanvas {
         //setForeground(Color.white);
         this.trailstart = this.trailstop = 0;
         this.trailmax = 1000;
-        //trails = new int[this.thread.nobj][trailmax][2];
-        //trailColor = new Color[this.thread.nobj];
-        //for (i=0; i<this.thread.nobj; i++)
-        //  trailColor[i] = Color.red;
-        //trailColor[10] = Color.cyan;
+        this.trails = [];
+        for (i = 0; i < this.thread.nobj; i++) {
+            this.trails[i] = [];
+            for (let j = 0; j < this.trailmax; j++) {
+                this.trails[i][j] = new Array(2);
+            }
+        }
+        this.trailColor = new Array(this.thread.nobj);
+        for (i = 0; i < this.thread.nobj; i++)
+            this.trailColor[i] = "red";
+        this.trailColor[10] = "cyan";
         if (this.useTrailBuffer)
             this.clearTrails();
     }
@@ -562,24 +552,23 @@ class RocketCanvas {
         else {
             g.fillStyle = "black";
             g.fillRect(0, 0, this.d.width, this.d.height);
-            /*
-                  if (this.rocket_top.drawtrails) {
-                for (i=0; i<this.thread.nobj; i++) {
-                  g.setColor(trailColor[i]);
-                  if (this.thread.use[i]) {
-                    if (this.trailstart <= this.trailstop) {
-                      for (j=this.trailstart; j<this.trailstop; j++)
-                    this.fillOval(g, trails[i][j][0], trails[i][j][1], 2, 2);
-                    } else {
-                      for (j=this.trailstart; j<this.trailmax; j++)
-                    this.fillOval(g, trails[i][j][0], trails[i][j][1], 2, 2);
-                      for (j=0; j<this.trailstop; j++)
-                    this.fillOval(g, trails[i][j][0], trails[i][j][1], 2, 2);
+            if (this.rocket_top.drawtrails) {
+                for (i = 0; i < this.thread.nobj; i++) {
+                    g.fillStyle = this.trailColor[i];
+                    if (this.thread.use[i]) {
+                        if (this.trailstart <= this.trailstop) {
+                            for (j = this.trailstart; j < this.trailstop; j++)
+                                this.fillOval(g, this.trails[i][j][0], this.trails[i][j][1], 2, 2);
+                        }
+                        else {
+                            for (j = this.trailstart; j < this.trailmax; j++)
+                                this.fillOval(g, this.trails[i][j][0], this.trails[i][j][1], 2, 2);
+                            for (j = 0; j < this.trailstop; j++)
+                                this.fillOval(g, this.trails[i][j][0], this.trails[i][j][1], 2, 2);
+                        }
                     }
-                  }
                 }
-                  }
-            */
+            }
         }
         g.fillStyle = "white";
         for (i = 0; i < this.thread.nobj; i++) {
@@ -591,25 +580,24 @@ class RocketCanvas {
                 g.fillStyle = "white";
                 this.fillOval(g, x - size, y - size, size * 2, size * 2);
                 this.drawCenteredString(g, this.thread.names[i], x, y + 7);
-                /*
-            if (rocket_top.drawtrails) {
-              if (useTrailBuffer) {
-                rocket_top.gBuf2.setColor(trailColor[i]);
-                rocket_top.gBuf2.fillOval(x-1, y-1, 2, 2);
-              } else {
-                trails[i][trailstop][0] = x-1;
-                trails[i][trailstop][1] = y-1;
-                trailstop++;
-                if (trailstop == trailmax)
-                  trailstop = 0;
-                if (trailstop == trailstart) {
-                  trailstart++;
-                  if (trailstart == trailmax)
-                trailstart = 0;
+                if (this.rocket_top.drawtrails) {
+                    if (this.useTrailBuffer) {
+                        //rocket_top.gBuf2.setColor(trailColor[i]);
+                        //rocket_top.gBuf2.fillOval(x-1, y-1, 2, 2);
+                    }
+                    else {
+                        this.trails[i][this.trailstop][0] = x - 1;
+                        this.trails[i][this.trailstop][1] = y - 1;
+                        this.trailstop++;
+                        if (this.trailstop == this.trailmax)
+                            this.trailstop = 0;
+                        if (this.trailstop == this.trailstart) {
+                            this.trailstart++;
+                            if (this.trailstart == this.trailmax)
+                                this.trailstart = 0;
+                        }
+                    }
                 }
-              }
-            }
-                */
             }
         }
         if (this.rocket_top.drawtrails && this.useTrailBuffer && !this.launched && this.thread.launched) {
