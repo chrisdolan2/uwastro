@@ -235,11 +235,8 @@ class Rocket {
     }
     this.twoDCheckbox.setChecked(this.use2D);
     this.captureCheckbox.setChecked(this.usecapture);
+    this.trailsCheckbox.setChecked(this.drawtrails);
 
-/*
-    bottom.add(trailsCheckbox = new Checkbox("Draw trails"));
-    trailsCheckbox.setState(drawtrails);
-*/
     this.setTime();
     this.setTimeStep();
     this.setZoom();

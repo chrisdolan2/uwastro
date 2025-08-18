@@ -201,26 +201,7 @@ class Rocket {
         }
         this.twoDCheckbox.setChecked(this.use2D);
         this.captureCheckbox.setChecked(this.usecapture);
-        /*
-           intThread.setPriority(Thread.MIN_PRIORITY);
-             
-            setFont(font = new Font("Helvetica", Font.PLAIN, 12));
-        
-            bottom.add(trailsCheckbox = new Checkbox("Draw trails"));
-            trailsCheckbox.setState(drawtrails);
-        
-        */
-        /*
-            current.add(new Label(""));
-            current.add(panel = new Panel());
-            panel.setLayout(new GridLayout(1,4));
-            panel.add(twoDCheckbox = new Checkbox("Use 2D physics?"));
-            twoDCheckbox.setState(use2D);
-            // twoDCheckbox.addItemlistener(this);
-            panel.add(captureCheckbox = new Checkbox("Use capture physics?"));
-            captureCheckbox.setState(usecapture);
-            // captureCheckbox.addItemlistener(this);
-        */
+        this.trailsCheckbox.setChecked(this.drawtrails);
         this.setTime();
         this.setTimeStep();
         this.setZoom();
