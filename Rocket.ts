@@ -1,3 +1,6 @@
+// DO NOT edit the Rocket.js file
+// Only edit the Rocket.ts file, then regenerate Rocket.js via `tsc`
+
 // This version is a straight port of http://user.astro.wisc.edu/~dolan/java/nbody/Rocket.java changing as little as possible, warts and all.
 // Earlier I tried to port + clean up in one go, but it was too hard to understand all the ancient Java code.
 
