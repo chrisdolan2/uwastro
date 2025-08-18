@@ -86,6 +86,12 @@ class JCheckbox {
   isChecked() : boolean {
     return this.html_element.checked;
   }
+  setState(c : boolean) : void {
+    this.setChecked(c);
+  }
+  getState() : boolean {
+    return this.isChecked();
+  }
 }
 
 class JMenu {
@@ -299,38 +305,38 @@ class Rocket {
     } else if (target == BSCheckbox) {
       useBSstep = BSCheckbox.getState();
       intThread.queueReset();
-    } else if (target == twoDCheckbox) {
-      use2D = twoDCheckbox.getState();
-      intThread.queueReset();
-    } else if (target == captureCheckbox) {
-      usecapture = captureCheckbox.getState();
-      intThread.queueReset();
-    } else if (target == trailsCheckbox) {
-      drawtrails = trailsCheckbox.getState();
-      canvas.clearTrails();
-    } else if (target == useCheckbox[0]) {
-      intThread.use[0] = useCheckbox[0].getState();
-    } else if (target == useCheckbox[1]) {
-      intThread.use[1] = useCheckbox[1].getState();
-    } else if (target == useCheckbox[2]) {
-      intThread.use[2] = useCheckbox[2].getState();
-    } else if (target == useCheckbox[3]) {
-      intThread.use[3] = useCheckbox[3].getState();
-    } else if (target == useCheckbox[4]) {
-      intThread.use[4] = useCheckbox[4].getState();
-    } else if (target == useCheckbox[5]) {
-      intThread.use[5] = useCheckbox[5].getState();
-    } else if (target == useCheckbox[6]) {
-      intThread.use[6] = useCheckbox[6].getState();
-    } else if (target == useCheckbox[7]) {
-      intThread.use[7] = useCheckbox[7].getState();
-    } else if (target == useCheckbox[8]) {
-      intThread.use[8] = useCheckbox[8].getState();
-    } else if (target == useCheckbox[9]) {
-      intThread.use[9] = useCheckbox[9].getState();
-    } else if (target == useCheckbox[10]) {
-      intThread.use[10] = useCheckbox[10].getState();
-    */
+*/
+    } else if (target == this.twoDCheckbox) {
+      this.use2D = this.twoDCheckbox.getState();
+      this.intThread.queueReset();
+    } else if (target == this.captureCheckbox) {
+      this.usecapture = this.captureCheckbox.getState();
+      this.intThread.queueReset();
+    } else if (target == this.trailsCheckbox) {
+      this.drawtrails = this.trailsCheckbox.getState();
+      this.canvas.clearTrails();
+    } else if (target == this.useCheckbox[0]) {
+      this.intThread.use[0] = this.useCheckbox[0].getState();
+    } else if (target == this.useCheckbox[1]) {
+      this.intThread.use[1] = this.useCheckbox[1].getState();
+    } else if (target == this.useCheckbox[2]) {
+      this.intThread.use[2] = this.useCheckbox[2].getState();
+    } else if (target == this.useCheckbox[3]) {
+      this.intThread.use[3] = this.useCheckbox[3].getState();
+    } else if (target == this.useCheckbox[4]) {
+      this.intThread.use[4] = this.useCheckbox[4].getState();
+    } else if (target == this.useCheckbox[5]) {
+      this.intThread.use[5] = this.useCheckbox[5].getState();
+    } else if (target == this.useCheckbox[6]) {
+      this.intThread.use[6] = this.useCheckbox[6].getState();
+    } else if (target == this.useCheckbox[7]) {
+      this.intThread.use[7] = this.useCheckbox[7].getState();
+    } else if (target == this.useCheckbox[8]) {
+      this.intThread.use[8] = this.useCheckbox[8].getState();
+    } else if (target == this.useCheckbox[9]) {
+      this.intThread.use[9] = this.useCheckbox[9].getState();
+    } else if (target == this.useCheckbox[10]) {
+      this.intThread.use[10] = this.useCheckbox[10].getState();
     } else {
       if (this.RocketMode) {
 	if (target == this.destmenu) {
@@ -358,14 +364,6 @@ class Rocket {
 	this.setTime();
 	this.canvas.update(this.canvas.getGraphics());
       }
-/*
-    } else if (target == optbutton) {
-      card.show(this, "Options");
-    } else if (target == helpbutton) {
-      card.show(this, "Help");
-    } else if (target == helpbutton2) {
-      card.show(this, "Plot");
-*/
     } else if (target == this.resetbutton) {
       if (this.threadstarted) {
 	if (this.running) {
