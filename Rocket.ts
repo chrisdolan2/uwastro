@@ -912,10 +912,11 @@ class RocketThread {
     this.tscale = 1.0/86400.0;
     this.mscale = 1.0e-3;
 
-    // tstep = 7.0*86400.0*this.tscale;  // 1 week
-    // tstep = 84600.0*this.tscale;      // 1 day
-    // tstep = 8.0*86400.0*this.tscale;  // 8 days (better than seven since it is a power of 2)
-    this.tstep = 4.0*86400.0*this.tscale;  // 4 days (changed 10/16/98 since we got a faster applet runner)
+    // this.tstep = 7.0*86400.0*this.tscale;  // 1 week
+    // this.tstep = 84600.0*this.tscale;      // 1 day
+    // this.tstep = 8.0*86400.0*this.tscale;  // 8 days (better than seven since it is a power of 2)
+    // this.tstep = 4.0*86400.0*this.tscale;  // 4 days (changed 10/16/98 since we got a faster applet runner)
+    this.tstep = 1.0*86400.0*this.tscale;  // 1 day (changed 8/17/25 for 60Hz refresh rate)
 
     this.launched = false;
     this.running = false;
