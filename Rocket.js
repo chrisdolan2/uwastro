@@ -547,14 +547,20 @@ class RocketCanvas {
         }
         g.fillStyle = "white";
         for (i = 0; i < this.thread.nobj; i++) {
-            if (this.thread.use[i] && (this.launched || i != this.thread.nobj - 1 || !this.rocket_top.RocketMode)) {
-                x = this.xmid + Math.floor(this.d.width * this.scale * (this.thread.pos[i * 6 + 1] - this.thread.pos[this.centerOn * 6 + 1]));
-                y = this.ymid - Math.floor(this.d.height * this.scale * (this.thread.pos[i * 6 + 2] - this.thread.pos[this.centerOn * 6 + 2]));
-                // z = Math.floor(this.d.height*this.scale*(this.thread.pos[i*6+3]-this.thread.pos[this.centerOn*6+3])*0.2);
-                z = Math.floor(this.d.height * this.scale * this.thread.pos[i * 6 + 3] * 0.2);
-                g.fillStyle = "white";
-                this.fillOval(g, x - size, y - size, size * 2, size * 2);
-                this.drawCenteredString(g, this.thread.names[i], x, y + 7);
+            if (this.thread.use[i]) {
+                if (this.launched || i != this.thread.nobj - 1 || !this.rocket_top.RocketMode) {
+                    x = this.xmid + Math.floor(this.d.width * this.scale * (this.thread.pos[i * 6 + 1] - this.thread.pos[this.centerOn * 6 + 1]));
+                    y = this.ymid - Math.floor(this.d.height * this.scale * (this.thread.pos[i * 6 + 2] - this.thread.pos[this.centerOn * 6 + 2]));
+                    // z = Math.floor(this.d.height*this.scale*(this.thread.pos[i*6+3]-this.thread.pos[this.centerOn*6+3])*0.2);
+                    z = Math.floor(this.d.height * this.scale * this.thread.pos[i * 6 + 3] * 0.2);
+                    g.fillStyle = "white";
+                    this.fillOval(g, x - size, y - size, size * 2, size * 2);
+                    this.drawCenteredString(g, this.thread.names[i], x, y + 7);
+                }
+                else {
+                    x = this.xmid + Math.floor(this.d.width * this.scale * (this.thread.pos[this.thread.homeplanet * 6 + 1] - this.thread.pos[this.centerOn * 6 + 1]));
+                    y = this.ymid - Math.floor(this.d.height * this.scale * (this.thread.pos[this.thread.homeplanet * 6 + 2] - this.thread.pos[this.centerOn * 6 + 2]));
+                }
                 if (this.rocket_top.drawtrails) {
                     this.trails[i][this.trailstop][0] = x - 1;
                     this.trails[i][this.trailstop][1] = y - 1;
