@@ -46,6 +46,28 @@ class JButton {
   }
 }
 
+// Wrapper around an HTML text input field
+class JTextField {
+  html_element : HTMLInputElement;
+
+  constructor(id : string, parent : any) {
+    let e = document.getElementById(id);
+    if (!(e instanceof HTMLInputElement)) {throw new Error("Missing input text field: " + id);}
+    this.html_element = <HTMLInputElement>e;
+    this.html_element.addEventListener("change", () => parent.deliverEvent(new JEvent(this, JEvent.ACTION_EVENT, null)));
+  }
+
+  setText(s : string) : void {
+    this.html_element.value = s;
+  }
+  getText() : string {
+    return this.html_element.value;
+  }
+  getNumber() : number {
+    return parseFloat(this.html_element.value);
+  }
+}
+
 class JMenu {
   html_menu: HTMLSelectElement;
 
@@ -53,7 +75,7 @@ class JMenu {
     let m = document.getElementById(id);
     if (!(m instanceof HTMLSelectElement)) {throw new Error("Missing menu: " + id);}
     this.html_menu = <HTMLSelectElement>m;
-    this.html_menu.addEventListener("click", () => parent.deliverEvent(new JEvent(this, JEvent.ACTION_EVENT, null)));
+    this.html_menu.addEventListener("change", () => parent.deliverEvent(new JEvent(this, JEvent.ACTION_EVENT, null)));
   }
 
   appendChild(name: string, value: string) {
@@ -61,6 +83,10 @@ class JMenu {
     option.appendChild(document.createTextNode(name));
     option.setAttribute("value", value);
     this.html_menu.appendChild(option);
+  }
+
+  select(i : number) : void {
+    this.html_menu.selectedIndex = i;
   }
 
   getSelectedIndex() : number {
@@ -73,12 +99,17 @@ class Rocket {
   canvas : RocketCanvas;
   intThread : RocketThread;
 
+  astDistText : JTextField = new JTextField("astDistText", this);
+  astTanVelText : JTextField = new JTextField("astTanVelText", this);
+  astRadVelText : JTextField = new JTextField("astRadVelText", this);
+  astVelText : JTextField = new JTextField("astVelText", this);
+  astDayText : JTextField = new JTextField("astDayText", this);
+  astAngText : JTextField = new JTextField("astAngText", this);
+  astAngRText : JTextField = new JTextField("astAngRText", this);
+  astVelText2 : JTextField = new JTextField("astVelText2", this);
+  astDayText2 : JTextField = new JTextField("astDayText2", this);
+  astAngText2 : JTextField = new JTextField("astAngText2", this);
 /*
-  Button optbutton, optbutton2, helpbutton, helpbutton2;
-  Choice centermenu, destmenu;
-  TextField astDistText, astTanVelText, astRadVelText;
-  TextField astVelText, astDayText, astAngText;
-  TextField astVelText2, astDayText2, astAngText2;
   Checkbox trailsCheckbox, BSCheckbox, twoDCheckbox, captureCheckbox;
   Checkbox useCheckbox[];
 */
@@ -92,6 +123,7 @@ class Rocket {
   timestep : Label = new Label("timestep");
   zoom : Label = new Label("zoom");
   centermenu : JMenu = new JMenu("center-on", this);
+  destmenu : JMenu = new JMenu("destmenu", this);
 
 // General variables
   startHandler : boolean = false;
@@ -108,12 +140,18 @@ class Rocket {
   RocketMode : boolean = true;
   AsteroidMode : boolean = false;
 
-  populateCenterOnMenu() : void {
+  populateMenus() : void {
     for (let i : number =0; i<this.intThread.nobj; i++) {
       if (this.intThread.use[i]) {
         this.centermenu.appendChild(this.intThread.names[i], ""+i);
       }
-     // centermenu.select(0);
+     this.centermenu.select(0);
+    }
+    for (let i : number =0; i<this.intThread.nobj; i++) {
+      if (this.intThread.use[i]) {
+        this.destmenu.appendChild(this.intThread.names[i], ""+i);
+      }
+     this.destmenu.select(this.intThread.realdestplanet);
     }
   }
 
@@ -155,167 +193,27 @@ class Rocket {
     this.intThread = new RocketThread(this);
     this.canvas = new RocketCanvas(this, this.intThread);
 
-    this.populateCenterOnMenu();
+    this.populateMenus();
+
+    this.astDistText.setText(""+this.intThread.astDist);
+    this.astTanVelText.setText(""+this.intThread.astTanVel);
+    this.astRadVelText.setText(""+this.intThread.astRadVel);
+    this.astVelText.setText(""+this.intThread.astVel);
+    this.astDayText.setText(""+this.intThread.astDay);
+    this.astAngText.setText(""+this.intThread.astAng);
+    this.astAngRText.setText(""+this.intThread.astAng);
+    this.astVelText2.setText(""+this.intThread.astVel2);
+    this.astDayText2.setText(""+this.intThread.astDay2);
+    this.astAngText2.setText(""+this.intThread.astAng2);
+
 /*
    intThread.setPriority(Thread.MIN_PRIORITY);
      
-   setBackground(Color.lightGray);
     setFont(font = new Font("Helvetica", Font.PLAIN, 12));
-    setLayout(card = new CardLayout());
-    add("Plot", center = new Panel());
-    add("Options", options = new Panel());
-
-    center.setLayout(new BorderLayout());
-    center.add("Center", canvas = new RocketCanvas(this, intThread));
-
-    panel = new Panel();
-    panel.setLayout(new GridLayout(2,1));
-    center.add("South", panel);
-
-    bottom = new Panel();
-    bottom.setLayout(new FlowLayout(FlowLayout.LEFT, 1, 5));
-    panel.add(bottom);
 
     bottom.add(trailsCheckbox = new Checkbox("Draw trails"));
     trailsCheckbox.setState(drawtrails);
-    // trailsCheckbox.addItemlistener(this);
-    bottom.add(runbutton = new Button("Run"));
-    // runbutton.addActionListener(this);
-    bottom.add(resetbutton = new Button("Restart"));
-    // resetbutton.addActionListener(this);
-    bottom.add(optbutton = new Button("Options"));
-    // optbutton.addActionListener(this);
-    bottom.add(new Label("Center on:"));
 
-    centermenu = new Choice();
-    bottom.add(centermenu);
-    // centermenu.addItemlistener(this);
-
-    bottom = new Panel();
-    bottom.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
-    panel.add(bottom);
-    bottom.add(new Label("Time:"));
-    bottom.add(time = new Label("000000000.0"));
-    setTime();
-    bottom.add(timeUp = new Button("+"));
-    // timeUp.addActionListener(this);
-    bottom.add(timeDown = new Button("-"));
-    // timeDown.addActionListener(this);
-    bottom.add(new Label("TimeStep:"));
-    bottom.add(timestep = new Label("000000000.0"));
-    setTimeStep();
-    bottom.add(zoomIn = new Button("+"));
-    // zoomIn.addActionListener(this);
-    bottom.add(zoomOut = new Button("-"));
-    // zoomOut.addActionListener(this);
-    bottom.add(new Label("Zoom:"));
-    bottom.add(zoom = new Label("1.0     "));
-    setTimeStep();
-
-    options.setLayout(new BorderLayout());
-
-    options.add("South", panel = new Panel());
-    panel.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
-    panel.add(optbutton2 = new Button("Return to main screen"));
-    // optbutton2.addActionListener(this);
-
-    options.add("Center", current = new Panel());
-    current.setLayout(new GridLayout(17,1));
-
-    if (RocketMode) {
-      current.add(panel = new Panel());
-      panel.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
-      panel.add(new Label("Launch Rocket From Earth:"));
-      
-      current.add(panel = new Panel());
-      panel.setLayout(new GridLayout(1,3));
-      panel.add(new Label("Destination:"));
-      destmenu = new Choice();
-      for (i=0; i<intThread.nobj-1; i++)
-	destmenu.addItem(intThread.names[i]);
-      destmenu.select(intThread.realdestplanet);
-      panel.add(destmenu);
-      // destmenu.addItemlistener(this);
-      panel.add(new Label(""));
-      
-      current.add(new Label(""));
-      
-      current.add(panel = new Panel());
-      panel.setLayout(new GridLayout(1,3));
-      panel.add(new Label("Angle from Sun (degrees CW):"));
-      panel.add(astAngText = new TextField(String.valueOf(intThread.astAng), 12));
-      panel.add(new Label(""));
-
-      current.add(panel = new Panel());
-      panel.setLayout(new GridLayout(1,3));
-      panel.add(new Label("Launch Velocity (km/s)"));
-      panel.add(astVelText = new TextField(String.valueOf(intThread.astVel), 12));
-      panel.add(new Label(""));
-      
-      current.add(panel = new Panel());
-      panel.setLayout(new GridLayout(1,3));
-      panel.add(new Label("Launch after how many days?"));
-      panel.add(astDayText = new TextField(String.valueOf(intThread.astDay), 12));
-      panel.add(new Label(""));
-
-      current.add(new Label(""));
-      current.add(panel = new Panel());
-      panel.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
-      panel.add(new Label("Return to Earth:"));
-      
-      current.add(panel = new Panel());
-      panel.setLayout(new GridLayout(1,3));
-      panel.add(new Label("Angle from Sun (degrees CW):"));
-      panel.add(astAngText2 = new TextField(String.valueOf(intThread.astAng2), 12));
-      panel.add(new Label(""));
-      
-      current.add(panel = new Panel());
-      panel.setLayout(new GridLayout(1,3));
-      panel.add(new Label("Launch Velocity (km/s)"));
-      panel.add(astVelText2 = new TextField(String.valueOf(intThread.astVel2), 12));
-      panel.add(new Label(""));
-
-      current.add(panel = new Panel());
-      panel.setLayout(new GridLayout(1,3));
-      panel.add(new Label("Launch after how many days?"));
-      panel.add(astDayText2 = new TextField(String.valueOf(intThread.astDay2), 12));
-      panel.add(new Label(""));
-    }
-
-    if (AsteroidMode) {
-      current.add(panel = new Panel());
-      panel.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
-      panel.add(new Label("Input Asteroid Observations:"));
-
-      current.add(panel = new Panel());
-      panel.setLayout(new GridLayout(1,3));
-      panel.add(new Label("Distance from Earth (AU):"));
-      panel.add(astDistText = new TextField(String.valueOf(intThread.astDist), 12));
-      panel.add(new Label(""));
-
-      current.add(panel = new Panel());
-      panel.setLayout(new GridLayout(1,3));
-      panel.add(new Label("Angle from sun (degrees CW):"));
-      panel.add(astAngText = new TextField(String.valueOf(intThread.astAng), 12));
-      panel.add(new Label(""));
-
-      current.add(panel = new Panel());
-      panel.setLayout(new GridLayout(1,3));
-      panel.add(new Label("Tangential Velocity (km/s):"));
-      panel.add(astTanVelText = new TextField(String.valueOf(intThread.astTanVel), 12));
-      panel.add(new Label(""));
-
-      current.add(panel = new Panel());
-      panel.setLayout(new GridLayout(1,3));
-      panel.add(new Label("Radial Velocity (km/s):"));
-      panel.add(astRadVelText = new TextField(String.valueOf(intThread.astRadVel), 12));
-      panel.add(new Label(""));
-
-      current.add(new Label(""));
-      current.add(new Label("(Note: Radial velocity is measured so that positive velocity is away from the Earth)"));
-    }
-
-    current.add(new Label(""));
     current.add(new Label("Include the following bodies in the simulation:"));
     useCheckbox = new Checkbox[intThread.nobj];
     current.add(panel = new Panel());
@@ -446,22 +344,19 @@ class Rocket {
       intThread.use[9] = useCheckbox[9].getState();
     } else if (target == useCheckbox[10]) {
       intThread.use[10] = useCheckbox[10].getState();
-    } else {
-      if (RocketMode) {
-	if (target == destmenu) {
-	  int i,j,n;
-	  n = destmenu.getSelectedIndex();
-	  for (i=0,j=0; i<n; i++,j++)
-	    while (!intThread.use[j])
-	      j++;
-	  intThread.realdestplanet = j;
-	} else {
-	  return false;
-	}
-      } else {
-	return false;
-      }
     */
+    } else {
+      if (this.RocketMode) {
+	if (target == this.destmenu) {
+	  let n : number = this.destmenu.getSelectedIndex();
+          let i : number;
+          let j : number;
+	  for (i=0, j=0; i<n; i++,j++)
+	    while (!this.intThread.use[j])
+	      j++;
+	  this.intThread.realdestplanet = j;
+	}
+      }
     }
     return false;
   }
@@ -523,24 +418,23 @@ class Rocket {
     } else if (target == this.zoomOut) {
       this.canvas.ZoomIn(false);
       this.setZoom();
-/*
-    } else if (target == optbutton2) {
-      if (RocketMode) {
-	intThread.doRocket(1, new Double(astAngText.getText()).doubleValue(),
-			   new Double(astVelText.getText()).doubleValue(),
-			   new Double(astDayText.getText()).doubleValue());
-	intThread.doRocket(2, new Double(astAngText2.getText()).doubleValue(),
-			   new Double(astVelText2.getText()).doubleValue(),
-			   new Double(astDayText2.getText()).doubleValue());
-	card.show(this, "Plot");
+    } else if ([this.astAngRText, this.astVelText, this.astDayText,
+                this.astAngText2, this.astVelText2, this.astDayText2,
+                this.astDistText, this.astAngText, this.astTanVelText, this.astRadVelText]
+                .find((e) => e == target)) {
+      if (this.RocketMode) {
+        this.intThread.doRocket(1, this.astAngRText.getNumber(),
+			   this.astVelText.getNumber(),
+			   this.astDayText.getNumber());
+        this.intThread.doRocket(2, this.astAngText2.getNumber(),
+			   this.astVelText2.getNumber(),
+			   this.astDayText2.getNumber());
       } else {
-	intThread.doAsteroid(new Double(astDistText.getText()).doubleValue(),
-			     new Double(astAngText.getText()).doubleValue(),
-			     new Double(astTanVelText.getText()).doubleValue(),
-			     new Double(astRadVelText.getText()).doubleValue());
-	card.show(this, "Plot");
+	this.intThread.doAsteroid(this.astDistText.getNumber(),
+			     this.astAngText.getNumber(),
+			     this.astTanVelText.getNumber(),
+			     this.astRadVelText.getNumber());
       }
-*/
     }
     return false;
   }
@@ -1439,6 +1333,7 @@ class RocketThread {
 	// This is a clue that the user has not yet entered any
 	// parameters on the Options screen.
 	if (vel != 0.0) {
+          console.log("launch!");
 	  
 	  // Angle of Rocket from Sun
 	  a = Math.atan2(this.pos[(this.nobj-1)*6+2], this.pos[(this.nobj-1)*6+1]);

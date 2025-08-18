@@ -6,13 +6,18 @@
   <link rel="alternate" href="https://github.com/chrisdolan2/uwastro"/>
   <script src="Rocket.js" defer=""></script>
   <script>
-    function toggleHelp() {
-        var help = document.getElementById("help-text");
-        if (help.style.display == "none") {
-            help.style.display = "";
+    function toggleElement(e) {
+        if (e.style.display == "none") {
+            e.style.display = "";
         } else {
-            help.style.display = "none";
+            e.style.display = "none";
         }
+    }
+    function toggleHelp() {
+        toggleElement(document.getElementById("help-text"));
+    }
+    function toggleOptions() {
+        toggleElement(document.getElementById("options-page"));
     }
   </script>
   <style><!-- JS will add rules here for Rocket mode or Asteroid mode --></style>
@@ -24,7 +29,7 @@
     <input type="checkbox" id="drawtrails"/> Draw trails
     <button id="run">Run</button>
     <button id="restart">Restart</button>
-    <button id="options">Options</button>
+    <button id="options" onClick="toggleOptions();">Options</button>
     <button id="help" onClick="toggleHelp();">Help</button>
     Center on:
     <select id="center-on">
@@ -123,7 +128,32 @@
     </code>
   </div>
 
-<div id="options-rocket">
+<div id="options-page" style="display: none">
+  <div class="rocketmode">
+    <p>
+      Launch Rocket From Earth: <br/>
+      Destination: <select id="destmenu"></select> <br/>
+      Angle from Sun (degrees CW): <input type="text" id="astAngRText"></input> <br/>
+      Launch Velocity (km/s):  <input type="text" id="astVelText"></input> <br/>
+      Launch after how many days? <input type="text" id="astDayText"></input>
+    </p>
+    <p>
+      Return to Earth: <br/>
+      Angle from Sun (degrees CW): <input type="text" id="astAngText2"></input> <br/>
+      Launch Velocity (km/s): <input type="text" id="astVelText2"></input> <br/>
+      Launch after how many days? <input type="text" id="astDayText2"></input>
+    </p>
+  </div>
+  <div class="asteroidmode">
+    <p>
+      Input Asteroid Observations: <br/>
+      Distance from Earth (AU): <input type="text" id="astDistText"></input> <br/>
+      Angle from sun (degrees CW): <input type="text" id="astAngText"></input> <br/>
+      Tangential Velocity (km/s): <input type="text" id="astTanVelText"></input> <br/>
+      Radial Velocity (km/s): <input type="text" id="astRadVelText"></input> <br/>
+      (Note: Radial velocity is measured so that positive velocity is away from the Earth)
+    </p>
+  </div>
 </div>
 </body>
 </html>
