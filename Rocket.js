@@ -442,7 +442,6 @@ class RocketCanvas {
         this.rocket_top = parent;
         this.thread = intThread;
         this.useDoubleBuffer = false;
-        this.useTrailBuffer = false;
         this.launched = false;
         this.message = "";
         this.msgsettime = Date.now();
@@ -466,7 +465,6 @@ class RocketCanvas {
         for (i = 0; i < this.thread.nobj; i++)
             this.trailColor[i] = "red";
         this.trailColor[10] = "cyan";
-        //if (this.useTrailBuffer)
         this.clearTrails();
     }
     getGraphics() {
@@ -481,24 +479,15 @@ class RocketCanvas {
             this.zoom /= amt;
         this.scale *= this.zoom;
         this.update(this.getGraphics());
-        //if (this.useTrailBuffer)
         this.clearTrails();
     }
     setCenter(c) {
         this.centerOn = c;
         this.update(this.getGraphics());
-        //if (this.useTrailBuffer)
         this.clearTrails();
     }
     clearTrails() {
-        if (this.useTrailBuffer) {
-            this.d = this.size();
-            this.ctx.fillStyle = "black";
-            this.ctx.fillRect(0, 0, this.d.width, this.d.height);
-        }
-        else {
-            this.trailstart = this.trailstop = 0;
-        }
+        this.trailstart = this.trailstop = 0;
     }
     drawCenteredString(g, s, x, y) {
         let t = g.measureText(s);
@@ -538,33 +527,21 @@ class RocketCanvas {
         this.d = this.size();
         this.xmid = this.d.width / 2;
         this.ymid = this.d.height / 2;
-        if (this.useTrailBuffer) {
-            if (this.rocket_top.drawtrails) {
-                // TODO
-                //g.drawImage(this.rocket_top.buf2, 0, 0, this);
-            }
-            else {
-                g.fillStyle = "black";
-                g.fillRect(0, 0, this.d.width, this.d.height);
-            }
-        }
-        else {
-            g.fillStyle = "black";
-            g.fillRect(0, 0, this.d.width, this.d.height);
-            if (this.rocket_top.drawtrails) {
-                for (i = 0; i < this.thread.nobj; i++) {
-                    g.fillStyle = this.trailColor[i];
-                    if (this.thread.use[i]) {
-                        if (this.trailstart <= this.trailstop) {
-                            for (j = this.trailstart; j < this.trailstop; j++)
-                                this.fillOval(g, this.trails[i][j][0], this.trails[i][j][1], 2, 2);
-                        }
-                        else {
-                            for (j = this.trailstart; j < this.trailmax; j++)
-                                this.fillOval(g, this.trails[i][j][0], this.trails[i][j][1], 2, 2);
-                            for (j = 0; j < this.trailstop; j++)
-                                this.fillOval(g, this.trails[i][j][0], this.trails[i][j][1], 2, 2);
-                        }
+        g.fillStyle = "black";
+        g.fillRect(0, 0, this.d.width, this.d.height);
+        if (this.rocket_top.drawtrails) {
+            for (i = 0; i < this.thread.nobj; i++) {
+                g.fillStyle = this.trailColor[i];
+                if (this.thread.use[i]) {
+                    if (this.trailstart <= this.trailstop) {
+                        for (j = this.trailstart; j < this.trailstop; j++)
+                            this.fillOval(g, this.trails[i][j][0], this.trails[i][j][1], 2, 2);
+                    }
+                    else {
+                        for (j = this.trailstart; j < this.trailmax; j++)
+                            this.fillOval(g, this.trails[i][j][0], this.trails[i][j][1], 2, 2);
+                        for (j = 0; j < this.trailstop; j++)
+                            this.fillOval(g, this.trails[i][j][0], this.trails[i][j][1], 2, 2);
                     }
                 }
             }
@@ -580,14 +557,8 @@ class RocketCanvas {
                 this.fillOval(g, x - size, y - size, size * 2, size * 2);
                 this.drawCenteredString(g, this.thread.names[i], x, y + 7);
                 if (this.rocket_top.drawtrails) {
-                    if (this.useTrailBuffer) {
-                        //rocket_top.gBuf2.setColor(trailColor[i]);
-                        //rocket_top.gBuf2.fillOval(x-1, y-1, 2, 2);
-                    }
-                    else {
-                        this.trails[i][this.trailstop][0] = x - 1;
-                        this.trails[i][this.trailstop][1] = y - 1;
-                    }
+                    this.trails[i][this.trailstop][0] = x - 1;
+                    this.trails[i][this.trailstop][1] = y - 1;
                 }
             }
         }
@@ -599,7 +570,6 @@ class RocketCanvas {
             if (this.trailstart == this.trailmax)
                 this.trailstart = 0;
         }
-        //if (this.rocket_top.drawtrails && this.useTrailBuffer && !this.launched && this.thread.launched) {
         if (this.rocket_top.drawtrails && !this.launched && this.thread.launched) {
             i = this.thread.nobj - 1;
             x = this.xmid + Math.floor(this.d.width * this.scale * (this.thread.pos[i * 6 + 1] - this.thread.pos[this.centerOn * 6 + 1]));
@@ -660,7 +630,6 @@ class RocketCanvas {
         let x;
         let y;
         let z;
-        //if (this.rocket_top.drawtrails && this.useTrailBuffer) {
         if (this.rocket_top.drawtrails) {
             i = this.thread.nobj - 1;
             x = this.xmid + Math.floor(this.d.width * this.scale * (this.thread.pos[i * 6 + 1] - this.thread.pos[this.centerOn * 6 + 1]));
