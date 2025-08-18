@@ -467,8 +467,8 @@ class RocketCanvas {
         for (i = 0; i < this.thread.nobj; i++)
             this.trailColor[i] = "red";
         this.trailColor[10] = "cyan";
-        if (this.useTrailBuffer)
-            this.clearTrails();
+        //if (this.useTrailBuffer)
+        this.clearTrails();
     }
     getGraphics() {
         return this.ctx;
@@ -482,14 +482,14 @@ class RocketCanvas {
             this.zoom /= amt;
         this.scale *= this.zoom;
         this.update(this.getGraphics());
-        if (this.useTrailBuffer)
-            this.clearTrails();
+        //if (this.useTrailBuffer)
+        this.clearTrails();
     }
     setCenter(c) {
         this.centerOn = c;
         this.update(this.getGraphics());
-        if (this.useTrailBuffer)
-            this.clearTrails();
+        //if (this.useTrailBuffer)
+        this.clearTrails();
     }
     clearTrails() {
         if (this.useTrailBuffer) {
@@ -588,17 +588,17 @@ class RocketCanvas {
                     else {
                         this.trails[i][this.trailstop][0] = x - 1;
                         this.trails[i][this.trailstop][1] = y - 1;
-                        this.trailstop++;
-                        if (this.trailstop == this.trailmax)
-                            this.trailstop = 0;
-                        if (this.trailstop == this.trailstart) {
-                            this.trailstart++;
-                            if (this.trailstart == this.trailmax)
-                                this.trailstart = 0;
-                        }
                     }
                 }
             }
+        }
+        this.trailstop++;
+        if (this.trailstop == this.trailmax)
+            this.trailstop = 0;
+        if (this.trailstop == this.trailstart) {
+            this.trailstart++;
+            if (this.trailstart == this.trailmax)
+                this.trailstart = 0;
         }
         //if (this.rocket_top.drawtrails && this.useTrailBuffer && !this.launched && this.thread.launched) {
         if (this.rocket_top.drawtrails && !this.launched && this.thread.launched) {
@@ -626,6 +626,9 @@ class RocketCanvas {
         let bbox = this.html_canvas.getBoundingClientRect();
         this.html_canvas.width = bbox.width;
         this.html_canvas.height = bbox.height;
+        // just an experiment
+        //this.d.width = bbox.width;
+        //this.d.height = bbox.height;
         if (this.useDoubleBuffer) {
             //this.paintSky(rocket_top.gBuf);
             //g.drawImage(rocket_top.buf, 0, 0, this);
@@ -659,7 +662,8 @@ class RocketCanvas {
         let x;
         let y;
         let z;
-        if (this.rocket_top.drawtrails && this.useTrailBuffer) {
+        //if (this.rocket_top.drawtrails && this.useTrailBuffer) {
+        if (this.rocket_top.drawtrails) {
             i = this.thread.nobj - 1;
             x = this.xmid + Math.floor(this.d.width * this.scale * (this.thread.pos[i * 6 + 1] - this.thread.pos[this.centerOn * 6 + 1]));
             y = this.ymid - Math.floor(this.d.height * this.scale * (this.thread.pos[i * 6 + 2] - this.thread.pos[this.centerOn * 6 + 2]));
