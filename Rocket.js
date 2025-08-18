@@ -203,15 +203,12 @@ class Rocket {
     getParams() {
         this.RocketMode = false;
         this.AsteroidMode = false;
-        let url = window.location.href;
+        let url = "" + window.location.href;
         if (!url) {
             this.RocketMode = true;
         }
         else {
-            if (url.includes("Rocket.html")) {
-                this.RocketMode = true;
-            }
-            else if (url.includes("Asteroid.html")) {
+            if (url.includes("Asteroid.html")) {
                 this.AsteroidMode = true;
             }
             else {
