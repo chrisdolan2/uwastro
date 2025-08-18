@@ -441,7 +441,6 @@ class RocketCanvas {
         this.ymid = this.d.height / 2;
         this.rocket_top = parent;
         this.thread = intThread;
-        this.useDoubleBuffer = false;
         this.launched = false;
         this.message = "";
         this.msgsettime = Date.now();
@@ -594,16 +593,7 @@ class RocketCanvas {
         let bbox = this.html_canvas.getBoundingClientRect();
         this.html_canvas.width = bbox.width;
         this.html_canvas.height = bbox.height;
-        // just an experiment
-        //this.d.width = bbox.width;
-        //this.d.height = bbox.height;
-        if (this.useDoubleBuffer) {
-            //this.paintSky(rocket_top.gBuf);
-            //g.drawImage(rocket_top.buf, 0, 0, this);
-        }
-        else {
-            this.paintSky(g);
-        }
+        this.paintSky(g);
         this.rocket_top.setReady();
     }
     update(g) {
