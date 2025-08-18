@@ -674,7 +674,8 @@ class RocketCanvas {
 	}
       }
     }
-    if (this.rocket_top.drawtrails && this.useTrailBuffer && !this.launched && this.thread.launched) {
+    //if (this.rocket_top.drawtrails && this.useTrailBuffer && !this.launched && this.thread.launched) {
+    if (this.rocket_top.drawtrails && !this.launched && this.thread.launched) {
       i = this.thread.nobj-1;
       x = this.xmid + Math.floor(this.d.width*this.scale*(this.thread.pos[i*6+1]-this.thread.pos[this.centerOn*6+1]));
       y = this.ymid - Math.floor(this.d.height*this.scale*(this.thread.pos[i*6+2]-this.thread.pos[this.centerOn*6+2]));
