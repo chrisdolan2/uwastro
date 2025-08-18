@@ -445,9 +445,8 @@ class RocketCanvas {
         this.useTrailBuffer = false;
         this.launched = false;
         this.message = "";
-        this.msgcount = 0;
-        this.msgkeeptime = 300; // - This was too short for Windows java SLJ 12-Nov-09
-        // this.msgkeeptime = 2000; - This works on Windows but make everthing else too slow SLJ 12-Nov-09
+        this.msgsettime = Date.now();
+        this.msgkeeptime = 10 * 1000; // milliseconds
         this.scale = 1.0 / (4.0 * 1.496e13 * this.thread.dscale);
         this.zoom = 1.0;
         this.centerOn = 0; // Track the Sun
@@ -616,9 +615,8 @@ class RocketCanvas {
         if (this.message != "") {
             g.fillStyle = "yellow";
             this.drawCenteredString(g, this.message, this.xmid, 10);
-            if (++this.msgcount == this.msgkeeptime) {
+            if (this.msgsettime + this.msgkeeptime < Date.now()) {
                 this.message = "";
-                this.msgcount = 0;
             }
         }
     }
@@ -1049,7 +1047,7 @@ class RocketThread {
         if (this.rocket_top.threadstarted) {
             this.rocket_top.canvas.launched = false;
             this.rocket_top.canvas.message = "";
-            this.rocket_top.canvas.msgcount = 0;
+            this.rocket_top.canvas.msgsettime = Date.now();
         }
         this.homeplanet = 3;
         this.destplanet = this.realdestplanet;
@@ -1152,7 +1150,7 @@ class RocketThread {
                             this.rocket_top.canvas.message = this.rocket_top.canvas.message.substring(0, this.rocket_top.canvas.message.length - 1);
                     }
                     this.rocket_top.canvas.message += " metric tons";
-                    this.rocket_top.canvas.msgcount = 0;
+                    this.rocket_top.canvas.msgsettime = Date.now();
                     this.refresh();
                 }
             }
@@ -1267,7 +1265,7 @@ class RocketThread {
                         else
                             s += "The rocket passed behind " + this.names[i];
                         this.rocket_top.canvas.message = s;
-                        this.rocket_top.canvas.msgcount = 0;
+                        this.rocket_top.canvas.msgsettime = Date.now();
                     }
                 }
             }
@@ -1299,7 +1297,7 @@ class RocketThread {
                             traveltime + " years";
                     }
                 }
-                this.rocket_top.canvas.msgcount = 0;
+                this.rocket_top.canvas.msgsettime = Date.now();
                 this.capture = i;
                 this.launched = false;
                 this.rocket_top.canvas.launched = false;
@@ -1313,7 +1311,7 @@ class RocketThread {
             }
             else {
                 this.rocket_top.canvas.message = "Asteroid collided with " + this.names[i] + "!";
-                this.rocket_top.canvas.msgcount = 0;
+                this.rocket_top.canvas.msgsettime = Date.now();
                 this.use[10] = false; // Remove the asteroid from the simulation
             }
         }
