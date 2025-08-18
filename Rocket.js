@@ -339,14 +339,6 @@ class Rocket {
                 this.setTime();
                 this.canvas.update(this.canvas.getGraphics());
             }
-            /*
-                } else if (target == optbutton) {
-                  card.show(this, "Options");
-                } else if (target == helpbutton) {
-                  card.show(this, "Help");
-                } else if (target == helpbutton2) {
-                  card.show(this, "Plot");
-            */
         }
         else if (target == this.resetbutton) {
             if (this.threadstarted) {
@@ -414,13 +406,18 @@ class Rocket {
             return false; // super.handleEvent(event);
         }
         if (event.id == JEvent.ACTION_EVENT) {
-            if (this.itemStateChanged(event) || this.actionPerformed(event))
+            if (this.itemStateChanged(event) || this.actionPerformed(event)) {
+                this.canvas.update(this.canvas.getGraphics());
                 return true;
-            else
+            }
+            else {
+                this.canvas.update(this.canvas.getGraphics());
                 return false; // super.handleEvent(event);
+            }
         }
-        else
+        else {
             return false; // super.handleEvent(event);
+        }
     }
     deliverEvent(event) {
         return this.handleEvent(event);

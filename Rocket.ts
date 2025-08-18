@@ -429,12 +429,16 @@ class Rocket {
     }
 
     if (event.id == JEvent.ACTION_EVENT) {
-      if (this.itemStateChanged(event) || this.actionPerformed(event))
+      if (this.itemStateChanged(event) || this.actionPerformed(event)) {
+        this.canvas.update(this.canvas.getGraphics());
 	return true;
-      else
+      } else {
+        this.canvas.update(this.canvas.getGraphics());
 	return false; // super.handleEvent(event);
-    } else
+      }
+    } else {
       return false; // super.handleEvent(event);
+    }
   }
 
   deliverEvent(event : JEvent) : boolean {
