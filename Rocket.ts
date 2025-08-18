@@ -1243,6 +1243,8 @@ class RocketThread {
     this.destplanet = this.realdestplanet;
     this.launch2 = 0.0;
     this.lastDist = this.baseDist = this.defaultDist;
+    if (this.rocket_top.canvas)
+      this.rocket_top.canvas.clearTrails();
   }
 
   doAsteroid(dist : number, ang : number, tanvel : number, 
