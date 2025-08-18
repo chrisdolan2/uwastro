@@ -2,7 +2,7 @@
 // Earlier I tried to port + clean up in one go, but it was too hard to understand all the ancient Java code.
 
 // Wrapper around an HTML span to show data
-class Label {
+class JLabel {
   html_label : HTMLSpanElement;
 
   constructor(id : string) {
@@ -68,6 +68,26 @@ class JTextField {
   }
 }
 
+
+// Wrapper around an HTML checkbox
+class JCheckbox {
+  html_element : HTMLInputElement;
+
+  constructor(id : string, parent : any) {
+    let e = document.getElementById(id);
+    if (!(e instanceof HTMLInputElement)) {throw new Error("Missing input checkbox: " + id);}
+    this.html_element = <HTMLInputElement>e;
+    this.html_element.addEventListener("change", () => parent.deliverEvent(new JEvent(this, JEvent.ACTION_EVENT, null)));
+  }
+
+  setChecked(c : boolean) : void {
+    this.html_element.checked = c;
+  }
+  isChecked() : boolean {
+    return this.html_element.checked;
+  }
+}
+
 class JMenu {
   html_menu: HTMLSelectElement;
 
@@ -109,19 +129,21 @@ class Rocket {
   astVelText2 : JTextField = new JTextField("astVelText2", this);
   astDayText2 : JTextField = new JTextField("astDayText2", this);
   astAngText2 : JTextField = new JTextField("astAngText2", this);
-/*
-  Checkbox trailsCheckbox, BSCheckbox, twoDCheckbox, captureCheckbox;
-  Checkbox useCheckbox[];
-*/
+  trailsCheckbox : JCheckbox = new JCheckbox("drawtrails", this);
+  twoDCheckbox : JCheckbox = new JCheckbox("twoDCheckbox", this);
+  captureCheckbox : JCheckbox = new JCheckbox("captureCheckbox", this);
+  //, BSCheckbox;
+  useCheckbox : JCheckbox[] = new Array<JCheckbox>(11);
+
   runbutton : JButton = new JButton("run", this);
   resetbutton : JButton = new JButton("restart", this);
   timeUp : JButton = new JButton("timestep-plus", this);
   timeDown : JButton = new JButton("timestep-minus", this);
   zoomIn : JButton = new JButton("zoom-plus", this);
   zoomOut : JButton = new JButton("zoom-minus", this);
-  time : Label = new Label("time");
-  timestep : Label = new Label("timestep");
-  zoom : Label = new Label("zoom");
+  time : JLabel = new JLabel("time");
+  timestep : JLabel = new JLabel("timestep");
+  zoom : JLabel = new JLabel("zoom");
   centermenu : JMenu = new JMenu("center-on", this);
   destmenu : JMenu = new JMenu("destmenu", this);
 
@@ -206,51 +228,18 @@ class Rocket {
     this.astDayText2.setText(""+this.intThread.astDay2);
     this.astAngText2.setText(""+this.intThread.astAng2);
 
-/*
-   intThread.setPriority(Thread.MIN_PRIORITY);
-     
-    setFont(font = new Font("Helvetica", Font.PLAIN, 12));
+    for (i=0; i<=10; i++) {
+       this.useCheckbox[i] = new JCheckbox("use"+i, this);
+       this.useCheckbox[i].setChecked(this.intThread.use[i]);
+       new JLabel("use"+i+"Text").setText(this.intThread.names[i]);
+    }
+    this.twoDCheckbox.setChecked(this.use2D);
+    this.captureCheckbox.setChecked(this.usecapture);
 
+/*
     bottom.add(trailsCheckbox = new Checkbox("Draw trails"));
     trailsCheckbox.setState(drawtrails);
-
-    current.add(new Label("Include the following bodies in the simulation:"));
-    useCheckbox = new Checkbox[intThread.nobj];
-    current.add(panel = new Panel());
-    panel.setLayout(new GridLayout(1,6));
-    panel.add(useCheckbox[0] = new Checkbox(intThread.names[0]));    
-    panel.add(useCheckbox[1] = new Checkbox(intThread.names[1]));    
-    panel.add(useCheckbox[2] = new Checkbox(intThread.names[2]));    
-    panel.add(useCheckbox[3] = new Checkbox(intThread.names[3]));    
-    panel.add(useCheckbox[4] = new Checkbox(intThread.names[4]));    
-    panel.add(useCheckbox[5] = new Checkbox(intThread.names[5]));
-    current.add(panel = new Panel());
-    panel.setLayout(new GridLayout(1,6));
-    panel.add(useCheckbox[6] = new Checkbox(intThread.names[6]));    
-    panel.add(useCheckbox[7] = new Checkbox(intThread.names[7]));    
-    panel.add(useCheckbox[8] = new Checkbox(intThread.names[8]));    
-    panel.add(useCheckbox[9] = new Checkbox(intThread.names[9]));    
-    panel.add(useCheckbox[10] = new Checkbox(intThread.names[10]));    
-    panel.add(new Label(""));    
-    for (i=0; i<intThread.nobj; i++) {
-      useCheckbox[i].setState(intThread.use[i]);
-      // useCheckbox[i].addItemlistener(this);
-    }
 */
-
-
-/*
-    current.add(new Label(""));
-    current.add(panel = new Panel());
-    panel.setLayout(new GridLayout(1,4));
-    panel.add(twoDCheckbox = new Checkbox("Use 2D physics?"));
-    twoDCheckbox.setState(use2D);
-    // twoDCheckbox.addItemlistener(this);
-    panel.add(captureCheckbox = new Checkbox("Use capture physics?"));
-    captureCheckbox.setState(usecapture);
-    // captureCheckbox.addItemlistener(this);
-*/
-
     this.setTime();
     this.setTimeStep();
     this.setZoom();
